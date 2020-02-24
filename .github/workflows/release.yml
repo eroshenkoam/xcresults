@@ -1,4 +1,4 @@
-name: Build
+name: Release
 
 on:
   release:
@@ -17,9 +17,12 @@ jobs:
         run: ./gradlew build
       - name: "Build Native Image"
         run: ./gradlew nativeImage
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
+      - name: "Upload Native Image"
+        uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: 'build/graal/xcresults'
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./build/graal/xcresults
+          asset_name: xcresults
+          asset_content_type: application/octet-stream
