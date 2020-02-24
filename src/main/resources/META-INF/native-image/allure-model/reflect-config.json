@@ -1,0 +1,44 @@
+[
+  {
+    "name" : "io.qameta.allure.model.Attachment",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.Label",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.Status",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.StatusDetails",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.StepResult",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.TestResult",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.qameta.allure.model.ExecutableItem",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  }
+]
