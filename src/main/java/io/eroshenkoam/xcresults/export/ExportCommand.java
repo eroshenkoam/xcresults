@@ -87,7 +87,9 @@ public class ExportCommand implements Runnable {
 
         final List<String> testRefIds = new ArrayList<>();
         for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
-            testRefIds.add(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText());
+            if (action.get(ACTION_RESULT).has(TEST_REF)) {
+                testRefIds.add(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText());
+            }
         }
         final List<String> testSummaryRefs = new ArrayList<>();
         for (final String testRefId : testRefIds) {
@@ -139,9 +141,11 @@ public class ExportCommand implements Runnable {
         final Map<String, String> refs = new HashMap<>();
         if (test.has(ATTACHMENTS)) {
             for (final JsonNode attachment : test.get(ATTACHMENTS).get(VALUES)) {
-                final String fileName = attachment.get(FILENAME).get(VALUE).asText();
-                final String attachmentRef = attachment.get(PAYLOAD_REF).get(ID).get(VALUE).asText();
-                refs.put(fileName, attachmentRef);
+                if (attachment.has(PAYLOAD_REF)) {
+                    final String fileName = attachment.get(FILENAME).get(VALUE).asText();
+                    final String attachmentRef = attachment.get(PAYLOAD_REF).get(ID).get(VALUE).asText();
+                    refs.put(fileName, attachmentRef);
+                }
             }
         }
         if (test.has(SUBACTIVITIES)) {
