@@ -3,6 +3,7 @@ package io.eroshenkoam.xcresults.export;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.qameta.allure.model.Attachment;
 import io.qameta.allure.model.Label;
+import io.qameta.allure.model.Parameter;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
@@ -42,8 +43,9 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String VALUES = "_values";
 
     @Override
-    public TestResult format(final JsonNode node) {
+    public TestResult format(final ExportMeta meta, final JsonNode node) {
         final TestResult result = new TestResult()
+                .setParameters(new ArrayList<>())
                 .setLabels(new ArrayList<>())
                 .setSteps(new ArrayList<>())
                 .setAttachments(new ArrayList<>());
@@ -63,7 +65,9 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 parseStep(result, result, activity);
             }
         }
-
+        meta.getParameters().forEach((name, value) -> {
+            result.getParameters().add(new Parameter().setName(name).setValue(value));
+        });
         if (nonNull(result.getStart())) {
             final Double durationText = node.get(DURATION).get(VALUE).asDouble();
             result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));

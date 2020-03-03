@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonExportFormatter implements ExportFormatter {
     @Override
-    public JsonNode format(JsonNode node) {
+    public JsonNode format(final ExportMeta meta, final JsonNode node) {
         return node;
     }
 }
