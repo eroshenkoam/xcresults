@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @CommandLine.Command(
         name = "export", mixinStandardHelpOptions = true,
@@ -22,8 +23,12 @@ import java.util.Map;
 )
 public class ExportCommand implements Runnable {
 
+    private static final String DEVICE_PARAMETER = "Device";
+
     private static final String ACTIONS = "actions";
     private static final String ACTION_RESULT = "actionResult";
+
+    private static final String RUN_DESTINATION = "runDestination";
 
     private static final String SUMMARIES = "summaries";
     private static final String TESTABLE_SUMMARIES = "testableSummaries";
@@ -44,6 +49,7 @@ public class ExportCommand implements Runnable {
     private static final String ID = "id";
     private static final String VALUE = "_value";
     private static final String VALUES = "_values";
+    private static final String DISPLAY_NAME = "displayName";
 
     private static final String TEST_REF = "testsRef";
 
@@ -85,32 +91,39 @@ public class ExportCommand implements Runnable {
         }
         Files.createDirectories(outputPath);
 
-        final List<String> testRefIds = new ArrayList<>();
+        final Map<String, ExportMeta> testRefIds = new HashMap<>();
         for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
-                testRefIds.add(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText());
+                final ExportMeta meta = new ExportMeta();
+                if (action.has(RUN_DESTINATION)) {
+                    meta.parameter(DEVICE_PARAMETER, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
+                }
+                testRefIds.put(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText(), meta);
             }
         }
-        final List<String> testSummaryRefs = new ArrayList<>();
-        for (final String testRefId : testRefIds) {
+        final Map<String, ExportMeta> testSummaryRefs = new HashMap<>();
+        testRefIds.forEach((testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
             for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
                 for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
                     for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
-                        testSummaryRefs.addAll(getTestSummaryRefs(test));
+                        getTestSummaryRefs(test).forEach(ref -> {
+                            testSummaryRefs.put(ref, testRefIds.get(testRefId));
+                        });
                     }
                 }
             }
-        }
+        });
         System.out.println(String.format("Export information about %s test summaries...", testSummaryRefs.size()));
         final Map<String, String> attachmentsRefs = new HashMap<>();
-        for (final String testSummaryRef : testSummaryRefs) {
+        testSummaryRefs.forEach((testSummaryRef, meta) -> {
             final JsonNode testSummary = getReference(testSummaryRef);
-            exportTestSummary(testSummaryRef, testSummary);
+            exportTestSummary(testSummaryRef, meta, testSummary);
             for (final JsonNode activity : testSummary.get(ACTIVITY_SUMMARIES).get(VALUES)) {
                 attachmentsRefs.putAll(getAttachmentRefs(activity));
             }
-        }
+
+        });
         System.out.println(String.format("Export information about %s attachments...", attachmentsRefs.size()));
         for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
             final Path attachmentPath = outputPath.resolve(attachment.getKey());
@@ -119,21 +132,29 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private void exportTestSummary(final String uuid, final JsonNode testSummary) throws IOException {
+    private void exportTestSummary(final String uuid, final ExportMeta meta, final JsonNode testSummary) {
+        Path testSummaryPath = null;
+        Object formattedResult = null;
         switch (format) {
             case json: {
-                final JsonNode formattedResult = new JsonExportFormatter().format(testSummary);
                 final String testSummaryFilename = String.format("%s.json", uuid);
-                final Path testSummaryPath = outputPath.resolve(testSummaryFilename);
-                mapper.writeValue(testSummaryPath.toFile(), formattedResult);
-                return;
+                testSummaryPath = outputPath.resolve(testSummaryFilename);
+                formattedResult = new JsonExportFormatter().format(meta, testSummary);
+                break;
             }
             case allure2: {
-                final TestResult formattedResult = new Allure2ExportFormatter().format(testSummary);
                 final String testSummaryFilename = String.format("%s-result.json", uuid);
-                final Path testSummaryPath = outputPath.resolve(testSummaryFilename);
+                testSummaryPath = outputPath.resolve(testSummaryFilename);
+                formattedResult = new Allure2ExportFormatter().format(meta, testSummary);
+                break;
+            }
+        }
+        try {
+            if (Objects.nonNull(formattedResult)) {
                 mapper.writeValue(testSummaryPath.toFile(), formattedResult);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -169,7 +190,7 @@ public class ExportCommand implements Runnable {
         return refs;
     }
 
-    private JsonNode readSummary() throws IOException {
+    private JsonNode readSummary() {
         final ProcessBuilder builder = new ProcessBuilder();
         builder.command(
                 "xcrun",
@@ -181,7 +202,7 @@ public class ExportCommand implements Runnable {
         return readProcessOutput(builder);
     }
 
-    private JsonNode getReference(final String id) throws IOException {
+    private JsonNode getReference(final String id) {
         final ProcessBuilder builder = new ProcessBuilder();
         builder.command(
                 "xcrun",
@@ -194,7 +215,7 @@ public class ExportCommand implements Runnable {
         return readProcessOutput(builder);
     }
 
-    private void exportReference(final String id, final Path output) throws IOException {
+    private void exportReference(final String id, final Path output) {
         final ProcessBuilder builder = new ProcessBuilder();
         builder.command(
                 "xcrun",
@@ -205,13 +226,21 @@ public class ExportCommand implements Runnable {
                 "--id", id,
                 "--output-path", output.toAbsolutePath().toString()
         );
-        builder.start();
+        readProcessOutput(builder);
     }
 
-    private JsonNode readProcessOutput(final ProcessBuilder builder) throws IOException {
-        final Process process = builder.start();
-        try (InputStream input = process.getInputStream()) {
-            return mapper.readTree(input);
+    private JsonNode readProcessOutput(final ProcessBuilder builder) {
+        try {
+            final Process process = builder.start();
+            try (InputStream input = process.getInputStream()) {
+                if (Objects.nonNull(input)) {
+                    return mapper.readTree(input);
+                } else {
+                    return null;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
