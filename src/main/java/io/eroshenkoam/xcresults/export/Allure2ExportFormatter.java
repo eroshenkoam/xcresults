@@ -2,17 +2,18 @@ package io.eroshenkoam.xcresults.export;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.qameta.allure.model.Attachment;
+import io.qameta.allure.model.ExecutableItem;
 import io.qameta.allure.model.Label;
 import io.qameta.allure.model.Parameter;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.model.TestResult;
-import io.qameta.allure.model.WithSteps;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +63,11 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (node.has(ACTIVITY_SUMMARIES)) {
             final Iterable<JsonNode> activities = node.get(ACTIVITY_SUMMARIES).get(VALUES);
             for (JsonNode activity : activities) {
-                parseStep(result, result, activity);
+                final StepContext context = new StepContext()
+                        .setResult(result)
+                        .setCurrent(result)
+                        .setPath(Collections.singletonList(result));
+                parseStep(activity, context);
             }
         }
         meta.getParameters().forEach((name, value) -> {
@@ -72,15 +77,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             final Double durationText = node.get(DURATION).get(VALUE).asDouble();
             result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));
         }
-
-        final Optional<StepResult> lastFailedStep = getLastFailed(result.getSteps());
-        lastFailedStep.map(StepResult::getStatusDetails).ifPresent(result::setStatusDetails);
-
         return result;
     }
 
     @SuppressWarnings("PMD.NcssCount")
-    private void parseStep(final TestResult result, final WithSteps parent, final JsonNode activity) {
+    private void parseStep(final JsonNode activity,
+                           final StepContext context) {
         final String activityTitle = activity.get(ACTIVITY_TITLE).get(VALUE).asText();
 
         final Pattern pattern = Pattern.compile("allure\\.label\\.(?<name>.*):(?<value>.*)");
@@ -89,12 +91,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             final Label label = new Label()
                     .setName(matcher.group("name"))
                     .setValue(matcher.group("value").trim());
-            result.getLabels().add(label);
+            context.getResult().getLabels().add(label);
             return;
         }
 
         if (activityTitle.startsWith("Start Test at") && activity.has(ACTIVITY_START)) {
-            result.setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
+            context.getResult().setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
             return;
         }
 
@@ -105,9 +107,14 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setAttachments(new ArrayList<>());
 
         if (activityTitle.startsWith("Assertion Failure:")) {
-            step.setStatusDetails(new StatusDetails()
-                    .setMessage(activityTitle));
+            final StatusDetails details = new StatusDetails()
+                    .setMessage(activityTitle);
+            step.setStatusDetails(details);
             step.setStatus(Status.FAILED);
+            context.getPath().forEach(item -> {
+                item.setStatusDetails(details);
+                item.setStatus(Status.FAILED);
+            });
         }
 
         if (activity.has(ACTIVITY_START) && activity.has(ACTIVITY_FINISH)) {
@@ -116,28 +123,28 @@ public class Allure2ExportFormatter implements ExportFormatter {
         }
         if (activity.has(SUBACTIVITIES)) {
             for (JsonNode subActivity : activity.get(SUBACTIVITIES).get(VALUES)) {
-                parseStep(result, step, subActivity);
+                parseStep(subActivity, context.child(step));
             }
         }
         if (activity.has(ATTACHMENTS)) {
             step.getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
         }
-        result.getSteps().add(step);
+        context.getCurrent().getSteps().add(step);
     }
 
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    private List<Attachment> getAttachments(final Iterable<JsonNode> activities) {
+    private List<Attachment> getAttachments(final Iterable<JsonNode> nodes) {
         final List<Attachment> attachments = new ArrayList<>();
-        for (JsonNode activity : activities) {
+        for (JsonNode node : nodes) {
             final Attachment attachment = new Attachment()
-                    .setSource(activity.get(FILENAME).get(VALUE).asText())
-                    .setName(activity.get(FILENAME).get(VALUE).asText());
+                    .setSource(node.get(FILENAME).get(VALUE).asText())
+                    .setName(node.get(FILENAME).get(VALUE).asText());
             attachments.add(attachment);
         }
         return attachments;
     }
 
-    protected Optional<StepResult> getLastFailed(final List<StepResult> steps) {
+    private Optional<StepResult> getLastFailed(final List<StepResult> steps) {
         if (isNull(steps)) {
             return Optional.empty();
         }
@@ -161,12 +168,56 @@ public class Allure2ExportFormatter implements ExportFormatter {
     }
 
     @SuppressWarnings("PMD.SimpleDateFormatNeedsLocale")
-    protected Long parseDate(final String date) {
+    private Long parseDate(final String date) {
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         try {
             return format.parse(date).getTime();
         } catch (ParseException e) {
             return null;
+        }
+    }
+
+    private class StepContext {
+
+        private TestResult result;
+        private ExecutableItem current;
+        private List<ExecutableItem> path;
+
+        public TestResult getResult() {
+            return result;
+        }
+
+        public StepContext setResult(TestResult result) {
+            this.result = result;
+            return this;
+        }
+
+        public ExecutableItem getCurrent() {
+            return current;
+        }
+
+        public StepContext setCurrent(ExecutableItem current) {
+            this.current = current;
+            return this;
+        }
+
+        public List<ExecutableItem> getPath() {
+            return path;
+        }
+
+        public StepContext setPath(List<ExecutableItem> path) {
+            this.path = path;
+            return this;
+        }
+
+        public StepContext child(final ExecutableItem next) {
+            final List<ExecutableItem> nextPath = new ArrayList<>(path);
+            nextPath.add(next);
+            return new StepContext()
+                    .setResult(result)
+                    .setCurrent(next)
+                    .setPath(nextPath);
+
         }
     }
 
