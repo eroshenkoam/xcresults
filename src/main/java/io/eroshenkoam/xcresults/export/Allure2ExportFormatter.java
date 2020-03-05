@@ -70,8 +70,8 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 parseStep(activity, context);
             }
         }
-        meta.getParameters().forEach((name, value) -> {
-            result.getParameters().add(new Parameter().setName(name).setValue(value));
+        meta.getLabels().forEach((name, value) -> {
+            result.getLabels().add(new Label().setName(name).setValue(value));
         });
         if (nonNull(result.getStart())) {
             final Double durationText = node.get(DURATION).get(VALUE).asDouble();
