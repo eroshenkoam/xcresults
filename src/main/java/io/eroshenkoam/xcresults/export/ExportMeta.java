@@ -6,18 +6,18 @@ import java.util.Objects;
 
 public class ExportMeta {
 
-    private Map<String, String> parameters;
+    private Map<String, String> labels;
 
-    public ExportMeta parameter(final String name, final String value) {
-        getParameters().put(name, value);
+    public ExportMeta label(final String name, final String value) {
+        getLabels().put(name, value);
         return this;
     }
 
-    public Map<String, String> getParameters() {
-        if (Objects.isNull(parameters)) {
-            this.parameters = new HashMap<>();
+    public Map<String, String> getLabels() {
+        if (Objects.isNull(labels)) {
+            this.labels = new HashMap<>();
         }
-        return parameters;
+        return labels;
     }
 
 }

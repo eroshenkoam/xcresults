@@ -3,7 +3,6 @@ package io.eroshenkoam.xcresults.export;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.qameta.allure.model.TestResult;
 import org.apache.commons.io.FileUtils;
 import picocli.CommandLine;
 
@@ -22,8 +21,6 @@ import java.util.Objects;
         description = "Export XC test results to json with attachments"
 )
 public class ExportCommand implements Runnable {
-
-    private static final String DEVICE_PARAMETER = "Device";
 
     private static final String ACTIONS = "actions";
     private static final String ACTION_RESULT = "actionResult";
@@ -96,7 +93,7 @@ public class ExportCommand implements Runnable {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
                 final ExportMeta meta = new ExportMeta();
                 if (action.has(RUN_DESTINATION)) {
-                    meta.parameter(DEVICE_PARAMETER, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
+                    meta.label(RUN_DESTINATION, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
                 }
                 testRefIds.put(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText(), meta);
             }
