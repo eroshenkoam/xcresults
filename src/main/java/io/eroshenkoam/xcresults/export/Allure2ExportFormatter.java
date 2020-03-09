@@ -74,8 +74,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             result.getLabels().add(new Label().setName(name).setValue(value));
         });
         if (nonNull(result.getStart())) {
-            final Double durationText = node.get(DURATION).get(VALUE).asDouble();
-            result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));
+            if (node.has(DURATION)) {
+                final Double durationText = node.get(DURATION).get(VALUE).asDouble();
+                result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));
+            } else {
+                result.setStop(result.getSteps().get(result.getSteps().size() - 1).getStop());
+            }
         }
         return result;
     }
