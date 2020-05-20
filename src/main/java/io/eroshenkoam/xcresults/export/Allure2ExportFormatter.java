@@ -39,6 +39,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String ATTACHMENTS = "attachments";
 
     private static final String NAME = "name";
+    private static final String DISPLAY_NAME = "displayName";
     private static final String FILENAME = "filename";
     private static final String VALUE = "_value";
     private static final String VALUES = "_values";
@@ -92,10 +93,14 @@ public class Allure2ExportFormatter implements ExportFormatter {
         final Pattern pattern = Pattern.compile("allure\\.label\\.(?<name>.*):(?<value>.*)");
         final Matcher matcher = pattern.matcher(activityTitle);
         if (matcher.matches()) {
-            final Label label = new Label()
-                    .setName(matcher.group("name"))
-                    .setValue(matcher.group("value").trim());
-            context.getResult().getLabels().add(label);
+            if (matcher.group("name").equals(DISPLAY_NAME)) {
+                context.getResult().setName(matcher.group("value"));
+            } else {
+                final Label label = new Label()
+                        .setName(matcher.group("name"))
+                        .setValue(matcher.group("value").trim());
+                context.getResult().getLabels().add(label);
+            }
             return;
         }
 
