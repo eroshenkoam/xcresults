@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.qameta.allure.model.Attachment;
 import io.qameta.allure.model.ExecutableItem;
 import io.qameta.allure.model.Label;
-import io.qameta.allure.model.Parameter;
+import io.qameta.allure.model.Link;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
@@ -89,13 +89,28 @@ public class Allure2ExportFormatter implements ExportFormatter {
                            final StepContext context) {
         final String activityTitle = activity.get(ACTIVITY_TITLE).get(VALUE).asText();
 
-        final Pattern pattern = Pattern.compile("allure\\.label\\.(?<name>.*):(?<value>.*)");
-        final Matcher matcher = pattern.matcher(activityTitle);
-        if (matcher.matches()) {
+        final Matcher nameMatcher = Pattern.compile("allure\\.name:(?<name>.*)")
+                .matcher(activityTitle);
+        if (nameMatcher.matches()) {
+            context.getResult().setName(nameMatcher.group("name"));
+        }
+        final Matcher labelMatcher = Pattern.compile("allure\\.label\\.(?<name>.*?):(?<value>.*)")
+                .matcher(activityTitle);
+        if (labelMatcher.matches()) {
             final Label label = new Label()
-                    .setName(matcher.group("name"))
-                    .setValue(matcher.group("value").trim());
+                    .setName(labelMatcher.group("name"))
+                    .setValue(labelMatcher.group("value").trim());
             context.getResult().getLabels().add(label);
+            return;
+        }
+        final Matcher linkMatcher = Pattern.compile("allure\\.link\\.(?<name>.*?)(|\\[(?<type>.*)]):(?<url>.*)")
+                .matcher(activityTitle);
+        if (linkMatcher.matches()) {
+            final Link link = new Link()
+                    .setName(linkMatcher.group("name"))
+                    .setType(linkMatcher.group("type"))
+                    .setUrl(linkMatcher.group("url").trim());
+            context.getResult().getLinks().add(link);
             return;
         }
 
