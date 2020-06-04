@@ -30,6 +30,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String STATUS = "testStatus";
 
     private static final String ACTIVITY_SUMMARIES = "activitySummaries";
+    private static final String ACTIVITY_TYPE = "activityType";
     private static final String ACTIVITY_TITLE = "title";
     private static final String ACTIVITY_START = "start";
     private static final String ACTIVITY_FINISH = "finish";
@@ -87,7 +88,11 @@ public class Allure2ExportFormatter implements ExportFormatter {
     @SuppressWarnings("PMD.NcssCount")
     private void parseStep(final JsonNode activity,
                            final StepContext context) {
-        final String activityTitle = activity.get(ACTIVITY_TITLE).get(VALUE).asText();
+        final Optional<String> title = getActivityTitle(activity);
+        if (!title.isPresent()) {
+            return;
+        }
+        final String activityTitle = title.get();
 
         final Matcher nameMatcher = Pattern.compile("allure\\.name:(?<name>.*)")
                 .matcher(activityTitle);
@@ -184,6 +189,16 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return Status.FAILED;
         }
         return null;
+    }
+
+    private Optional<String> getActivityTitle(final JsonNode node) {
+        if (node.has(ACTIVITY_TITLE)) {
+            return Optional.of(node.get(ACTIVITY_TITLE).get(VALUE).asText());
+        }
+        if (node.has(ACTIVITY_TYPE)) {
+            return Optional.of(node.get(ACTIVITY_TYPE).get(VALUE).asText());
+        }
+        return Optional.empty();
     }
 
     @SuppressWarnings("PMD.SimpleDateFormatNeedsLocale")
