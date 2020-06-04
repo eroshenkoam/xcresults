@@ -89,7 +89,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private void parseStep(final JsonNode activity,
                            final StepContext context) {
         final Optional<String> title = getActivityTitle(activity);
-        if (title.isEmpty()) {
+        if (!title.isPresent()) {
             return;
         }
         final String activityTitle = title.get();
