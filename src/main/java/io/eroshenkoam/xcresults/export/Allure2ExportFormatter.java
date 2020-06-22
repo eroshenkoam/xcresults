@@ -98,6 +98,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .matcher(activityTitle);
         if (nameMatcher.matches()) {
             context.getResult().setName(nameMatcher.group("name"));
+            return;
         }
         final Matcher labelMatcher = Pattern.compile("allure\\.label\\.(?<name>.*?):(?<value>.*)")
                 .matcher(activityTitle);
