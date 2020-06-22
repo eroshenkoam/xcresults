@@ -12,6 +12,12 @@
     "allDeclaredFields" : true
   },
   {
+    "name" : "io.qameta.allure.model.Link",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
     "name" : "io.qameta.allure.model.Status",
     "allDeclaredConstructors" : true,
     "allDeclaredMethods" : true,
