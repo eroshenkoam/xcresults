@@ -1,0 +1,35 @@
+{
+  "_type": {
+    "_name": "ActionTestMetadata",
+    "_supertype": {
+      "_name": "ActionTestSummaryIdentifiableObject",
+      "_supertype": {
+        "_name": "ActionAbstractTestSummary"
+      }
+    }
+  },
+  "duration": {
+    "_type": {
+      "_name": "Double"
+    },
+    "_value": "0.00042998790740966797"
+  },
+  "identifier": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "DoubleValueFormatterTest/testThreeFractionDigitsRoundDown()"
+  },
+  "name": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "testThreeFractionDigitsRoundDown()"
+  },
+  "testStatus": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "Success"
+  }
+}

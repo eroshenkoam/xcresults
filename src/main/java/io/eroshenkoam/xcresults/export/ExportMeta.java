@@ -6,7 +6,17 @@ import java.util.Objects;
 
 public class ExportMeta {
 
+    private Long start;
     private Map<String, String> labels;
+
+    public ExportMeta setStart(final Long startTime) {
+        this.start = startTime;
+        return this;
+    }
+
+    public Long getStart() {
+        return this.start;
+    }
 
     public ExportMeta label(final String name, final String value) {
         getLabels().put(name, value);
