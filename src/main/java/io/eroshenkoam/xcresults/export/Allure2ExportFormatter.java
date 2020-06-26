@@ -94,6 +94,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
         }
         final String activityTitle = title.get();
 
+        final Matcher idMatcher = Pattern.compile("allure\\.id:(?<id>.*)")
+                .matcher(activityTitle);
+        if (idMatcher.matches()) {
+            context.getResult().setName(idMatcher.group("id"));
+            return;
+        }
         final Matcher nameMatcher = Pattern.compile("allure\\.name:(?<name>.*)")
                 .matcher(activityTitle);
         if (nameMatcher.matches()) {
