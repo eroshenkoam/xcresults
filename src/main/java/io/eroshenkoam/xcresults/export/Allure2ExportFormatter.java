@@ -10,16 +10,16 @@ import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.model.TestResult;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -74,11 +74,15 @@ public class Allure2ExportFormatter implements ExportFormatter {
         meta.getLabels().forEach((name, value) -> {
             result.getLabels().add(new Label().setName(name).setValue(value));
         });
-        if (nonNull(result.getStart())) {
+        if (Objects.isNull(result.getStart())) {
+            result.setStart(meta.getStart());
+        }
+        if (Objects.nonNull(result.getStart())) {
             if (node.has(DURATION)) {
                 final Double durationText = node.get(DURATION).get(VALUE).asDouble();
                 result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));
-            } else {
+            }
+            if (result.getSteps().size() > 0) {
                 result.setStop(result.getSteps().get(result.getSteps().size() - 1).getStop());
             }
         }
@@ -209,16 +213,6 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return Optional.of(node.get(ACTIVITY_TYPE).get(VALUE).asText());
         }
         return Optional.empty();
-    }
-
-    @SuppressWarnings("PMD.SimpleDateFormatNeedsLocale")
-    private Long parseDate(final String date) {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        try {
-            return format.parse(date).getTime();
-        } catch (ParseException e) {
-            return null;
-        }
     }
 
     private class StepContext {

@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+
+import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
 
 @CommandLine.Command(
         name = "export", mixinStandardHelpOptions = true,
@@ -26,6 +29,7 @@ public class ExportCommand implements Runnable {
     private static final String ACTION_RESULT = "actionResult";
 
     private static final String RUN_DESTINATION = "runDestination";
+    private static final String START_TIME = "startedTime";
 
     private static final String SUMMARIES = "summaries";
     private static final String TESTABLE_SUMMARIES = "testableSummaries";
@@ -44,9 +48,12 @@ public class ExportCommand implements Runnable {
     private static final String SUMMARY_REF = "summaryRef";
 
     private static final String ID = "id";
+    private static final String TYPE = "_type";
+    private static final String NAME = "_name";
     private static final String VALUE = "_value";
     private static final String VALUES = "_values";
     private static final String DISPLAY_NAME = "displayName";
+    private static final String IDENTIFIER = "identifier";
 
     private static final String TEST_REF = "testsRef";
 
@@ -95,31 +102,34 @@ public class ExportCommand implements Runnable {
                 if (action.has(RUN_DESTINATION)) {
                     meta.label(RUN_DESTINATION, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
                 }
+                if (action.has(START_TIME)) {
+                    meta.setStart(parseDate(action.get(START_TIME).get(VALUE).textValue()));
+                }
                 testRefIds.put(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText(), meta);
             }
         }
-        final Map<String, ExportMeta> testSummaryRefs = new HashMap<>();
+        final Map<JsonNode, ExportMeta> testSummaries = new HashMap<>();
         testRefIds.forEach((testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
             for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
                 for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
                     for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
-                        getTestSummaryRefs(test).forEach(ref -> {
-                            testSummaryRefs.put(ref, testRefIds.get(testRefId));
+                        getTestSummaries(test).forEach(testSummary -> {
+                            testSummaries.put(testSummary, testRefIds.get(testRefId));
                         });
                     }
                 }
             }
         });
-        System.out.println(String.format("Export information about %s test summaries...", testSummaryRefs.size()));
+        System.out.println(String.format("Export information about %s test summaries...", testSummaries.size()));
         final Map<String, String> attachmentsRefs = new HashMap<>();
-        testSummaryRefs.forEach((testSummaryRef, meta) -> {
-            final JsonNode testSummary = getReference(testSummaryRef);
-            exportTestSummary(testSummaryRef, meta, testSummary);
-            for (final JsonNode activity : testSummary.get(ACTIVITY_SUMMARIES).get(VALUES)) {
-                attachmentsRefs.putAll(getAttachmentRefs(activity));
+        testSummaries.forEach((testSummary, meta) -> {
+            exportTestSummary(meta, testSummary);
+            if (testSummary.has(ACTIVITY_SUMMARIES)) {
+                for (final JsonNode activity : testSummary.get(ACTIVITY_SUMMARIES).get(VALUES)) {
+                    attachmentsRefs.putAll(getAttachmentRefs(activity));
+                }
             }
-
         });
         System.out.println(String.format("Export information about %s attachments...", attachmentsRefs.size()));
         for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
@@ -129,9 +139,10 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private void exportTestSummary(final String uuid, final ExportMeta meta, final JsonNode testSummary) {
+    private void exportTestSummary(final ExportMeta meta, final JsonNode testSummary) {
         Path testSummaryPath = null;
         Object formattedResult = null;
+        final String uuid = UUID.randomUUID().toString();
         switch (format) {
             case json: {
                 final String testSummaryFilename = String.format("%s.json", uuid);
@@ -172,6 +183,23 @@ public class ExportCommand implements Runnable {
             }
         }
         return refs;
+    }
+
+    private List<JsonNode> getTestSummaries(final JsonNode test) {
+        final List<JsonNode> summaries = new ArrayList<>();
+        if (test.has(SUMMARY_REF)) {
+            final String ref = test.get(SUMMARY_REF).get(ID).get(VALUE).asText();
+            summaries.add(getReference(ref));
+        }
+        if (test.has(TYPE) && test.get(TYPE).get(NAME).textValue().equals("ActionTestMetadata")) {
+            summaries.add(test);
+        }
+        if (test.has(SUBTESTS)) {
+            for (final JsonNode subTest : test.get(SUBTESTS).get(VALUES)) {
+                summaries.addAll(getTestSummaries(subTest));
+            }
+        }
+        return summaries;
     }
 
     private List<String> getTestSummaryRefs(final JsonNode test) {
