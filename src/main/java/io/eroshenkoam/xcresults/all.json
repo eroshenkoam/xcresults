@@ -1,0 +1,388 @@
+{
+  "_type": {
+    "_name": "ActionRecord"
+  },
+  "actionResult": {
+    "_type": {
+      "_name": "ActionResult"
+    },
+    "coverage": {
+      "_type": {
+        "_name": "CodeCoverageInfo"
+      }
+    },
+    "diagnosticsRef": {
+      "_type": {
+        "_name": "Reference"
+      },
+      "id": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "0~GC_q-Zhz5IEOXPe1MliYSWOX-Z22hL-Fs-J4aYS2m3NuoC15nNP8ZLDd0az6ufQeAr1BNit4rNKxjuRa8JziZA=="
+      }
+    },
+    "issues": {
+      "_type": {
+        "_name": "ResultIssueSummaries"
+      }
+    },
+    "logRef": {
+      "_type": {
+        "_name": "Reference"
+      },
+      "id": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "0~YHH1fyV45i7VG6bZ5ISQP2cQClWlhh3DXGCsro7G05J5d-npWwejIR82_eEfey5wDhGoW_eAICCUK1YDJiv7pQ=="
+      },
+      "targetType": {
+        "_type": {
+          "_name": "TypeDefinition"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "ActivityLogSection"
+        }
+      }
+    },
+    "metrics": {
+      "_type": {
+        "_name": "ResultMetrics"
+      },
+      "testsCount": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "469"
+      }
+    },
+    "resultName": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "action"
+    },
+    "status": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "succeeded"
+    },
+    "testsRef": {
+      "_type": {
+        "_name": "Reference"
+      },
+      "id": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "0~VPfD4ZeeEJU5_zrXHuXleN4xIIbD-YVugTEnc3zBMt0SEuQSakyuYbrIOCTCzXBgUEhvVGG2_Bn_MXLaaDV09w=="
+      },
+      "targetType": {
+        "_type": {
+          "_name": "TypeDefinition"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "ActionTestPlanRunSummaries"
+        }
+      }
+    }
+  },
+  "buildResult": {
+    "_type": {
+      "_name": "ActionResult"
+    },
+    "coverage": {
+      "_type": {
+        "_name": "CodeCoverageInfo"
+      }
+    },
+    "issues": {
+      "_type": {
+        "_name": "ResultIssueSummaries"
+      }
+    },
+    "metrics": {
+      "_type": {
+        "_name": "ResultMetrics"
+      }
+    },
+    "resultName": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "build"
+    },
+    "status": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "notRequested"
+    }
+  },
+  "endedTime": {
+    "_type": {
+      "_name": "Date"
+    },
+    "_value": "2020-05-21T17:35:29.252+0300"
+  },
+  "runDestination": {
+    "_type": {
+      "_name": "ActionRunDestinationRecord"
+    },
+    "displayName": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "iPhone SE"
+    },
+    "localComputerRecord": {
+      "_type": {
+        "_name": "ActionDeviceRecord"
+      },
+      "busSpeedInMHz": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "400"
+      },
+      "cpuCount": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "1"
+      },
+      "cpuKind": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "6-Core Intel Core i7"
+      },
+      "cpuSpeedInMHz": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "3200"
+      },
+      "identifier": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "0D6AB65C-A818-56D4-A460-65D0B6027DA8"
+      },
+      "isConcreteDevice": {
+        "_type": {
+          "_name": "Bool"
+        },
+        "_value": "true"
+      },
+      "logicalCPUCoresPerPackage": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "12"
+      },
+      "modelCode": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "Macmini8,1"
+      },
+      "modelName": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "Mac mini"
+      },
+      "modelUTI": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "com.apple.macmini-2018"
+      },
+      "name": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "My Mac"
+      },
+      "nativeArchitecture": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "x86_64h"
+      },
+      "operatingSystemVersion": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "10.15.4"
+      },
+      "operatingSystemVersionWithBuildNumber": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "10.15.4 (19E266)"
+      },
+      "physicalCPUCoresPerPackage": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "6"
+      },
+      "platformRecord": {
+        "_type": {
+          "_name": "ActionPlatformRecord"
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.platform.macosx"
+        },
+        "userDescription": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "macOS"
+        }
+      },
+      "ramSizeInMegabytes": {
+        "_type": {
+          "_name": "Int"
+        },
+        "_value": "32768"
+      }
+    },
+    "targetArchitecture": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "x86_64"
+    },
+    "targetDeviceRecord": {
+      "_type": {
+        "_name": "ActionDeviceRecord"
+      },
+      "identifier": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "83C2D34D-2751-4FF0-ABD7-AAEA1EE94BC0"
+      },
+      "isConcreteDevice": {
+        "_type": {
+          "_name": "Bool"
+        },
+        "_value": "true"
+      },
+      "modelCode": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "iPhone8,4"
+      },
+      "modelName": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "iPhone SE"
+      },
+      "modelUTI": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "com.apple.iphone-se-a1662-aeb1b8"
+      },
+      "name": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "iPhone SE"
+      },
+      "nativeArchitecture": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "x86_64"
+      },
+      "operatingSystemVersion": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "13.4"
+      },
+      "operatingSystemVersionWithBuildNumber": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "13.4 (17E255)"
+      },
+      "platformRecord": {
+        "_type": {
+          "_name": "ActionPlatformRecord"
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.platform.iphonesimulator"
+        },
+        "userDescription": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "iOS Simulator"
+        }
+      }
+    },
+    "targetSDKRecord": {
+      "_type": {
+        "_name": "ActionSDKRecord"
+      },
+      "identifier": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "iphonesimulator13.4"
+      },
+      "name": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "Simulator - iOS 13.4"
+      },
+      "operatingSystemVersion": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "13.4"
+      }
+    }
+  },
+  "schemeCommandName": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "Test"
+  },
+  "schemeTaskName": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "Action"
+  },
+  "startedTime": {
+    "_type": {
+      "_name": "Date"
+    },
+    "_value": "2020-05-21T17:27:04.826+0300"
+  }
+}

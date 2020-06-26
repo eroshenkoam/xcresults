@@ -1,0 +1,2142 @@
+{
+  "_type": {
+    "_name": "ActionTestSummary",
+    "_supertype": {
+      "_name": "ActionTestSummaryIdentifiableObject",
+      "_supertype": {
+        "_name": "ActionAbstractTestSummary"
+      }
+    }
+  },
+  "activitySummaries": {
+    "_type": {
+      "_name": "Array"
+    },
+    "_values": [
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.internal"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:44.329+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:44.291+0300"
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Start Test at 2020-06-17 11:22:44.291"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "374FF29F-C009-4421-880C-144B83DC0909"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.deletedAttachment"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:44.291+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:44.291+0300"
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Some screenshots were deleted because testing is configured to remove automatic screenshots on success."
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "DC4350B0-4D91-4782-94F8-89974D3F5F2B"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.internal"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:48.260+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:44.330+0300"
+        },
+        "subactivities": {
+          "_type": {
+            "_name": "Array"
+          },
+          "_values": [
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.userCreated"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:44.331+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:44.331+0300"
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "allure.label.package:Календрь"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "94BE5AEF-6AD0-4617-9844-D4A67D6F4FFD"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.userCreated"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:44.332+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:44.331+0300"
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "allure.label.suite:Работа с месяцами"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "536136F0-8044-4FFB-83B2-30733DC82F27"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:48.260+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:44.332+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.259+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:44.370+0300"
+                    },
+                    "subactivities": {
+                      "_type": {
+                        "_name": "Array"
+                      },
+                      "_values": [
+                        {
+                          "_type": {
+                            "_name": "ActionTestActivitySummary"
+                          },
+                          "activityType": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "com.apple.dt.xctest.activity-type.internal"
+                          },
+                          "finish": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:45.415+0300"
+                          },
+                          "start": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:44.371+0300"
+                          },
+                          "title": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "Terminate ru.tcsenterprise.core.ios.*:89633"
+                          },
+                          "uuid": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "1D6A2F06-2F85-4F9E-A89C-AD924F782E0C"
+                          }
+                        },
+                        {
+                          "_type": {
+                            "_name": "ActionTestActivitySummary"
+                          },
+                          "activityType": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "com.apple.dt.xctest.activity-type.internal"
+                          },
+                          "finish": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:46.333+0300"
+                          },
+                          "start": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:45.626+0300"
+                          },
+                          "title": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "Setting up automation session"
+                          },
+                          "uuid": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "0CEC4F00-F33C-4652-A76D-CE72E47CC64E"
+                          }
+                        },
+                        {
+                          "_type": {
+                            "_name": "ActionTestActivitySummary"
+                          },
+                          "activityType": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "com.apple.dt.xctest.activity-type.internal"
+                          },
+                          "finish": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:47.255+0300"
+                          },
+                          "start": {
+                            "_type": {
+                              "_name": "Date"
+                            },
+                            "_value": "2020-06-17T11:22:46.333+0300"
+                          },
+                          "title": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                          },
+                          "uuid": {
+                            "_type": {
+                              "_name": "String"
+                            },
+                            "_value": "0648635F-F0DB-455C-816E-311DAD5AC028"
+                          }
+                        }
+                      ]
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Launch ru.tcsenterprise.core.ios.*"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "15383D21-454F-4F01-9ED0-6A135D7510BE"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Open ru.tcsenterprise.core.ios.*"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "7AEA7316-6E3E-4941-8791-E52B1727B156"
+              }
+            }
+          ]
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Set Up"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "54A6DED8-14E8-48A8-86A4-8E256088AD05"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.userCreated"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:48.261+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:48.261+0300"
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "allure.label.testId:154187"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "A49F27FB-D5E8-4E8E-8031-1F2CD49F6C38"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.userCreated"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:51.801+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:48.262+0300"
+        },
+        "subactivities": {
+          "_type": {
+            "_name": "Array"
+          },
+          "_values": [
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:48.915+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:48.262+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.299+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.262+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "E51FEC4A-4BD0-4771-8F51-953B30C4FF67"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.373+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.300+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the Button"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "079DF9A5-B55A-4723-BA4C-278FEB882CFB"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.413+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.379+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"Month Calendar\" Button"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "9AD76BDC-6DC2-475B-A62D-4B862A3BC255"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.502+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.413+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "4B325764-18E9-471E-976E-AD13355F7AF1"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.914+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:48.503+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "D5B9066F-CC08-42D8-8A69-ABAB0CC8F7FE"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Tap Button"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "A891B0F1-D1A9-4A0F-864C-4B310477806D"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:50.007+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:49.935+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.007+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:49.935+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Checking existence of `\"Задать года\" StaticText`"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "1D536E1D-AC0A-4817-A6A7-6B22C502A9E2"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Checking `Expect predicate `exists == 1` for object \"Задать года\" StaticText`"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "D71BF584-366A-4656-B50A-5594B910A8C0"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:50.312+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:50.008+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.055+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.008+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "B22BC988-4BA8-4B55-AFE3-D3F2B50FEC3F"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.096+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.056+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the \"Задать года\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "DC0DFA4B-819D-4F48-BB1D-97B1EF2DAD13"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.133+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.098+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"Задать года\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "D5095D7B-8ACD-4629-A6DB-D8662AC45071"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.223+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.134+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "BBF2236E-5050-4482-8B6C-C4B07DB2228D"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.311+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.224+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "F12B057B-F7BE-45E0-A796-4ADF9EE17318"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Tap \"Задать года\" StaticText"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "AD7DD89F-2D04-4354-B44B-E3192B650DF6"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:51.019+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:50.312+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.815+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.312+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "17122FED-1F40-4169-B858-7F94C0F19AA5"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.901+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.816+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the PickerWheel"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "74BEE9FC-7116-4166-AC39-D3A6BDA0221F"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.956+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.907+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"2000\" PickerWheel"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "FED7656B-A43F-406C-A93D-F08D9E057717"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.990+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.957+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "49277D75-9EC0-45C4-8FFA-1E3F745DE7C3"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.018+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:50.990+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "60FD6BEB-95FF-4049-9628-C73059F58374"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Set value of PickerWheel to 2000"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "0A5D8382-7103-4543-81BE-6E42B0E7C498"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:51.800+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:51.019+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.050+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.020+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "6A3B334C-1911-4BD5-A26A-316E1B941B09"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.106+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.051+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the \"Done\" Button"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "C0BFC7FC-4F0F-4B91-9BB8-A513096935DB"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.158+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.110+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"Done\" Button"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "DAA27743-6EEC-45CC-9681-3BE16CB6591E"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.255+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.159+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "42C5BAF4-AD0D-4804-BE56-D46B65D80F31"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.800+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.257+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "DEDF06CE-3E91-4F9C-8903-382D4B22ED6E"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Tap \"Done\" Button"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "C3F593E6-21E1-4D17-BFEB-B92F90CCA908"
+              }
+            }
+          ]
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Конфигурация календаря"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "22EAC28C-66E2-456B-A3EC-6E4EA58CD950"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.userCreated"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:52.118+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:51.802+0300"
+        },
+        "subactivities": {
+          "_type": {
+            "_name": "Array"
+          },
+          "_values": [
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:52.117+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:51.802+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.842+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.803+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "94747E9E-6906-468A-9901-7D0ADFF2700E"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.917+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.843+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the \"Показать календарь\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "4EA1E524-C64A-40E4-919D-F4918185FA7C"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.985+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.921+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"Показать календарь\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "8CA71B1C-23F8-407C-8F61-9BFE31CDE8E5"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:52.077+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:51.986+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "3B4AA76D-2F80-421A-A4C9-0FD96ECD377B"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:52.117+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:52.078+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "B12E1D32-4EB8-48F4-B095-76C39900B714"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Tap \"Показать календарь\" StaticText"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "14FF9EB6-775F-4A4C-A26F-3C797F8454BD"
+              }
+            }
+          ]
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Жмем на кнопку \"Показать календарь\""
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "AAB2DB54-7D43-450B-A994-82AD5FD4B082"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.userCreated"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:53.540+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:52.119+0300"
+        },
+        "subactivities": {
+          "_type": {
+            "_name": "Array"
+          },
+          "_values": [
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:53.201+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:53.133+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.201+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.134+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Checking existence of `\"Январь\" StaticText`"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "9E5C0FED-D232-42B6-A40B-73FAA017DAA6"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Checking `Expect predicate `exists == 1` for object \"Январь\" StaticText`"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "29FF90A1-C704-49C5-AE88-DCAAAB3B260C"
+              }
+            },
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:53.539+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:53.202+0300"
+              },
+              "subactivities": {
+                "_type": {
+                  "_name": "Array"
+                },
+                "_values": [
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.244+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.202+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "D0FD8BC2-2A2C-416E-AB69-CC5527BDBFB7"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.315+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.245+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Find the \"Январь\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "CED51239-4EEB-4E39-9E39-6BEA98C5932C"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.380+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.323+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Check for interrupting elements affecting \"Январь\" StaticText"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "6F191AA0-FC0E-451A-8CBA-E18791D87DAB"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.489+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.380+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Synthesize event"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "BCBB471B-7F1B-4E7A-A3DA-C3F732F07AA0"
+                    }
+                  },
+                  {
+                    "_type": {
+                      "_name": "ActionTestActivitySummary"
+                    },
+                    "activityType": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "com.apple.dt.xctest.activity-type.internal"
+                    },
+                    "finish": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.538+0300"
+                    },
+                    "start": {
+                      "_type": {
+                        "_name": "Date"
+                      },
+                      "_value": "2020-06-17T11:22:53.491+0300"
+                    },
+                    "title": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "Wait for ru.tcsenterprise.core.ios.* to idle"
+                    },
+                    "uuid": {
+                      "_type": {
+                        "_name": "String"
+                      },
+                      "_value": "51DE8493-97A4-4D8D-BFE9-F8935182C4DA"
+                    }
+                  }
+                ]
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Tap \"Январь\" StaticText"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "FCC59058-2FCE-46E4-B3DB-015374C4508A"
+              }
+            }
+          ]
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Жмем на кнопку \"Показать календарь\""
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "B703350B-6A96-48AB-AD68-F71C9BB7313F"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.userCreated"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:54.655+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:53.541+0300"
+        },
+        "subactivities": {
+          "_type": {
+            "_name": "Array"
+          },
+          "_values": [
+            {
+              "_type": {
+                "_name": "ActionTestActivitySummary"
+              },
+              "activityType": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.dt.xctest.activity-type.internal"
+              },
+              "finish": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:54.566+0300"
+              },
+              "start": {
+                "_type": {
+                  "_name": "Date"
+                },
+                "_value": "2020-06-17T11:22:54.546+0300"
+              },
+              "title": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "Find the Target Application 'ru.tcsenterprise.core.ios.*'"
+              },
+              "uuid": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "95C3512F-8622-43D3-B045-008925AC8BA2"
+              }
+            }
+          ]
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Проверям , что месяц выбрался"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "B101DC18-863C-47F1-A8B0-AB9611EDAB2B"
+        }
+      },
+      {
+        "_type": {
+          "_name": "ActionTestActivitySummary"
+        },
+        "activityType": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "com.apple.dt.xctest.activity-type.internal"
+        },
+        "finish": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:54.657+0300"
+        },
+        "start": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2020-06-17T11:22:54.656+0300"
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Tear Down"
+        },
+        "uuid": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "B28D205E-5A20-4AC1-9AF0-E582E2A2FE91"
+        }
+      }
+    ]
+  },
+  "duration": {
+    "_type": {
+      "_name": "Double"
+    },
+    "_value": "10.568103075027466"
+  },
+  "identifier": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "CalendarMonths/testSelectedMonth()"
+  },
+  "name": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "testSelectedMonth()"
+  },
+  "testStatus": {
+    "_type": {
+      "_name": "String"
+    },
+    "_value": "Success"
+  }
+}
