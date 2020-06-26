@@ -97,7 +97,10 @@ public class Allure2ExportFormatter implements ExportFormatter {
         final Matcher idMatcher = Pattern.compile("allure\\.id:(?<id>.*)")
                 .matcher(activityTitle);
         if (idMatcher.matches()) {
-            context.getResult().setName(idMatcher.group("id"));
+            final Label label = new Label()
+                    .setName("AS_ID")
+                    .setValue(idMatcher.group("id"));
+            context.getResult().getLabels().add(label);
             return;
         }
         final Matcher nameMatcher = Pattern.compile("allure\\.name:(?<name>.*)")
