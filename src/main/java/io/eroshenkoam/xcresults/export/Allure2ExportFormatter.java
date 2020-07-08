@@ -15,13 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 public class Allure2ExportFormatter implements ExportFormatter {
 
@@ -44,6 +42,8 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String VALUE = "_value";
     private static final String VALUES = "_values";
 
+    private static final String SUITE = "suite";
+
     @Override
     public TestResult format(final ExportMeta meta, final JsonNode node) {
         final TestResult result = new TestResult()
@@ -55,7 +55,9 @@ public class Allure2ExportFormatter implements ExportFormatter {
             result.setName(node.get(NAME).get(VALUE).asText());
         }
         if (node.has(IDENTIFIER)) {
-            result.setFullName(node.get(IDENTIFIER).get(VALUE).asText());
+            final String identifier = node.get(IDENTIFIER).get(VALUE).asText();
+            result.setHistoryId(getHistoryId(meta, identifier));
+            result.setFullName(identifier);
         }
         if (node.has(STATUS)) {
             result.setStatus(getTestStatus(node));
@@ -258,6 +260,11 @@ public class Allure2ExportFormatter implements ExportFormatter {
                     .setPath(nextPath);
 
         }
+    }
+
+    private String getHistoryId(final ExportMeta meta, final String identifier) {
+        final String suite = meta.getLabels().getOrDefault(SUITE, "Default");
+        return String.format("%s/%s", suite, identifier);
     }
 
 }
