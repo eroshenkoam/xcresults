@@ -80,7 +80,8 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (Objects.nonNull(result.getStart())) {
             if (node.has(DURATION)) {
                 final Double durationText = node.get(DURATION).get(VALUE).asDouble();
-                result.setStop(result.getStart() + TimeUnit.SECONDS.toMillis(durationText.longValue()));
+                long durationToMillis = (long) (durationText * 1000);
+                result.setStop(result.getStart() + durationToMillis);
             }
             if (result.getSteps().size() > 0) {
                 result.setStop(result.getSteps().get(result.getSteps().size() - 1).getStop());
