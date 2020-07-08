@@ -144,13 +144,10 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private ExportMeta getTestMeta(ExportMeta meta, JsonNode testableSummary) {
+    private ExportMeta getTestMeta(final ExportMeta meta, final JsonNode testableSummary) {
         final ExportMeta exportMeta = new ExportMeta();
         exportMeta.setStart(meta.getStart());
-        meta.getLabels().forEach((key, value) -> {
-            exportMeta.label(key, value);
-        });
-
+        meta.getLabels().forEach(exportMeta::label);
         exportMeta.label(SUITE, testableSummary.get(TARGET_NAME).get(VALUE).asText());
         return exportMeta;
     }
@@ -218,19 +215,6 @@ public class ExportCommand implements Runnable {
             }
         }
         return summaries;
-    }
-
-    private List<String> getTestSummaryRefs(final JsonNode test) {
-        final List<String> refs = new ArrayList<>();
-        if (test.has(SUMMARY_REF)) {
-            refs.add(test.get(SUMMARY_REF).get(ID).get(VALUE).asText());
-        }
-        if (test.has(SUBTESTS)) {
-            for (final JsonNode subTest : test.get(SUBTESTS).get(VALUES)) {
-                refs.addAll(getTestSummaryRefs(subTest));
-            }
-        }
-        return refs;
     }
 
     private JsonNode readSummary() {
