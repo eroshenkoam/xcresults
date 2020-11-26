@@ -147,17 +147,27 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setSteps(new ArrayList<>())
                 .setAttachments(new ArrayList<>());
 
-        if (activityTitle.startsWith("Assertion Failure:")) {
-            final StatusDetails details = new StatusDetails()
-                    .setMessage(activityTitle);
+        final boolean hasSpecialMessage = activityTitle.startsWith("Assertion Failure")
+                || activityTitle.contains("Test skipped");
+
+        if (hasSpecialMessage) {
+            final Status status = context.getResult().getStatus();
+            final StatusDetails details = new StatusDetails();
+
+            if (isNull(status)) {
+                details.setMessage("xcresults export tool issue: unsupported `testStatus` value found inside xcresult report");
+            } else {
+                details.setMessage(activityTitle);
+            }
+
             step.setStatusDetails(details);
-            step.setStatus(Status.FAILED);
+            step.setStatus(status);
+
             context.getPath().forEach(item -> {
                 item.setStatusDetails(details);
-                item.setStatus(Status.FAILED);
+                item.setStatus(status);
             });
         }
-
         if (activity.has(ACTIVITY_START) && activity.has(ACTIVITY_FINISH)) {
             step.setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
             step.setStop(parseDate(activity.get(ACTIVITY_FINISH).get(VALUE).asText()));
@@ -199,13 +209,17 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (isNull(status)) {
             return null;
         }
-        if ("Success".equals(status)) {
-            return Status.PASSED;
+
+        switch (status) {
+            case "Success":
+                return Status.PASSED;
+            case "Failure":
+                return Status.FAILED;
+            case "Skipped":
+                return Status.SKIPPED;
+            default:
+                return null;
         }
-        if ("Failure".equals(status)) {
-            return Status.FAILED;
-        }
-        return null;
     }
 
     private Optional<String> getActivityTitle(final JsonNode node) {
