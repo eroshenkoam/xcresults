@@ -147,10 +147,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setSteps(new ArrayList<>())
                 .setAttachments(new ArrayList<>());
 
-        final boolean hasSpecialMessage = activityTitle.startsWith("Assertion Failure")
+        final boolean hasAssertionMessage = activityTitle.startsWith("Assertion Failure")
                 || activityTitle.contains("Test skipped");
 
-        if (hasSpecialMessage) {
+        final boolean hasAssertionType = activity.has(ACTIVITY_TYPE)
+                && activity.get(ACTIVITY_TYPE).get(VALUE).asText().contains("testAssertionFailure");
+
+        if (hasAssertionMessage || hasAssertionType) {
             final Status status = context.getResult().getStatus();
             final StatusDetails details = new StatusDetails();
 
