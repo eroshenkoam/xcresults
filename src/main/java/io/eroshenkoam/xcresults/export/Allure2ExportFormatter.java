@@ -116,6 +116,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             context.getResult().setName(nameMatcher.group("name"));
             return;
         }
+        final Matcher descriptionMatcher = Pattern.compile("allure\\.description:(?<description>.*)")
+                .matcher(activityTitle);
+        if (descriptionMatcher.matches()) {
+            context.getResult().setDescription(nameMatcher.group("description"));
+            return;
+        }
         final Matcher labelMatcher = Pattern.compile("allure\\.label\\.(?<name>.*?):(?<value>.*)")
                 .matcher(activityTitle);
         if (labelMatcher.matches()) {
