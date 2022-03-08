@@ -2,6 +2,15 @@
 
 A command line tool to extract test summaries & screenshots from Xcode 11 XCResult files.
 
+To build an executable <b>xcresults</b> use gradle command found below:
+
+<i>./gradlew clean nativeImage</i>
+
+A final executable binary distributive will be placed here:
+
+<b>./build/graal</b>
+
+
 ## Installation
 
 Download latest version from github releases: 
