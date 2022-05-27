@@ -117,10 +117,14 @@ public class ExportCommand implements Runnable {
             for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
                 for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
                     final ExportMeta testMeta = getTestMeta(meta, testableSummary);
-                    for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
-                        getTestSummaries(test).forEach(testSummary -> {
-                            testSummaries.put(testSummary, testMeta);
-                        });
+                    if (testableSummary.has(TESTS) && testableSummary.get(TESTS).has(VALUES)) {
+                        for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
+                            getTestSummaries(test).forEach(testSummary -> {
+                                testSummaries.put(testSummary, testMeta);
+                            });
+                        }
+                    } else {
+                        System.out.printf("No tests found for '%s'%n", testableSummary.get("name").get(VALUE));
                     }
                 }
             }
