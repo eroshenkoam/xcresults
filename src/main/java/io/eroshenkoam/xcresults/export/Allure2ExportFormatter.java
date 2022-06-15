@@ -9,6 +9,7 @@ import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.model.TestResult;
+import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.eroshenkoam.xcresults.export.ExportCommand.FILE_EXTENSION_HEIC;
 import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
 import static java.util.Objects.isNull;
 
@@ -196,9 +198,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private List<Attachment> getAttachments(final Iterable<JsonNode> nodes) {
         final List<Attachment> attachments = new ArrayList<>();
         for (JsonNode node : nodes) {
+            final String originalFileName = node.get(FILENAME).get(VALUE).asText();
+            final String fileName = FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(originalFileName))
+                    ? String.format("%s.%s", FilenameUtils.getBaseName(originalFileName), "jpeg")
+                    : originalFileName;
             final Attachment attachment = new Attachment()
-                    .setSource(node.get(FILENAME).get(VALUE).asText())
-                    .setName(node.get(FILENAME).get(VALUE).asText());
+                    .setSource(fileName)
+                    .setName(fileName);
             attachments.add(attachment);
         }
         return attachments;
