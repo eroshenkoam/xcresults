@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
         description = "Export XC test results to json with attachments"
 )
 public class ExportCommand implements Runnable {
+
+    public static final String FILE_EXTENSION_HEIC = "heic";
 
     private static final String ACTIONS = "actions";
     private static final String ACTION_RESULT = "actionResult";
@@ -243,8 +246,8 @@ public class ExportCommand implements Runnable {
     }
 
     private void exportReference(final String id, final Path output) {
-        final ProcessBuilder builder = new ProcessBuilder();
-        builder.command(
+        final ProcessBuilder exportBuilder = new ProcessBuilder();
+        exportBuilder.command(
                 "xcrun",
                 "xcresulttool",
                 "export",
@@ -253,7 +256,30 @@ public class ExportCommand implements Runnable {
                 "--id", id,
                 "--output-path", output.toAbsolutePath().toString()
         );
-        readProcessOutput(builder);
+        readProcessOutput(exportBuilder);
+        if (FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(output.toString()))) {
+            convertHeicToJpeg(output);
+        }
+    }
+
+    private void convertHeicToJpeg(Path heicPath) {
+        try {
+            final Path parent = heicPath.getParent();
+            final String jpegFilename = String.format("%s.%s", FilenameUtils.getBaseName(heicPath.toString()), "jpeg");
+            final Path jpegFilePath = parent.resolve(jpegFilename);
+            final ProcessBuilder convertBuilder = new ProcessBuilder();
+            convertBuilder.command(
+                    "sips", "-s",
+                    "format", "jpeg",
+                    heicPath.toAbsolutePath().toString(),
+                    "--out", jpegFilePath.toAbsolutePath().toString()
+            );
+            Process process = convertBuilder.start();
+            process.waitFor();
+            FileUtils.deleteQuietly(heicPath.toFile());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JsonNode readProcessOutput(final ProcessBuilder builder) {
