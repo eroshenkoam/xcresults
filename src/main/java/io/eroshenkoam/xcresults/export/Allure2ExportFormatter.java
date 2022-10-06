@@ -13,7 +13,9 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -28,12 +30,18 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String IDENTIFIER = "identifier";
     private static final String DURATION = "duration";
     private static final String STATUS = "testStatus";
+    private static final String FAILURE_SUMMARIES = "failureSummaries";
 
     private static final String ACTIVITY_SUMMARIES = "activitySummaries";
     private static final String ACTIVITY_TYPE = "activityType";
+    private static final String ACTIVITY_UUID = "uuid";
     private static final String ACTIVITY_TITLE = "title";
     private static final String ACTIVITY_START = "start";
     private static final String ACTIVITY_FINISH = "finish";
+    private static final String ACTIVITY_FAILURE_SUMMARY_IDS = "failureSummaryIDs";
+
+    private static final String FAILURE_MESSAGE = "message";
+    private static final String FAILURE_TIMESTAMP = "timestamp";
 
     private static final String SUBACTIVITIES = "subactivities";
 
@@ -64,7 +72,6 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (node.has(STATUS)) {
             result.setStatus(getTestStatus(node));
         }
-
         if (node.has(ACTIVITY_SUMMARIES)) {
             final Iterable<JsonNode> activities = node.get(ACTIVITY_SUMMARIES).get(VALUES);
             for (JsonNode activity : activities) {
@@ -72,6 +79,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
                         .setResult(result)
                         .setCurrent(result)
                         .setPath(Collections.singletonList(result));
+                if (node.has(FAILURE_SUMMARIES)) {
+                    final Map<String, JsonNode> failures = new HashMap<>();
+                    node.get(FAILURE_SUMMARIES).get(VALUES).forEach(failure -> {
+                        failures.put(failure.get(ACTIVITY_UUID).get(VALUE).asText(), failure);
+                    });
+                    context.setFailures(failures);
+                }
                 parseStep(activity, context);
             }
         }
@@ -157,10 +171,8 @@ public class Allure2ExportFormatter implements ExportFormatter {
 
         final boolean hasAssertionMessage = activityTitle.startsWith("Assertion Failure")
                 || activityTitle.contains("Test skipped");
-
         final boolean hasAssertionType = activity.has(ACTIVITY_TYPE)
                 && activity.get(ACTIVITY_TYPE).get(VALUE).asText().contains("testAssertionFailure");
-
         if (hasAssertionMessage || hasAssertionType) {
             final Status status = context.getResult().getStatus();
             final StatusDetails details = new StatusDetails();
@@ -191,6 +203,34 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (activity.has(ATTACHMENTS)) {
             step.getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
         }
+        if (activity.has(ACTIVITY_FAILURE_SUMMARY_IDS)) {
+            final Iterable<JsonNode> activityFailures = activity.get(ACTIVITY_FAILURE_SUMMARY_IDS).get(VALUES);
+            for (JsonNode activityFailureUuid : activityFailures) {
+                final String uuid = activityFailureUuid.get(VALUE).asText();
+                final JsonNode activityFailure = context.getFailures().get(uuid);
+                final Long timestamp = parseDate(activityFailure.get(FAILURE_TIMESTAMP).get(VALUE).asText());
+                final String message = activityFailure.get(FAILURE_MESSAGE).get(VALUE).asText();
+                final Status failedStatus = Status.FAILED;
+                final StatusDetails failedDetails = new StatusDetails()
+                        .setMessage(message);
+                final StepResult failureStep = new StepResult()
+                        .setStatus(failedStatus)
+                        .setName(message)
+                        .setStart(timestamp)
+                        .setStop(timestamp);
+                failureStep.setStatusDetails(failedDetails);
+                if (activityFailure.has(ATTACHMENTS)) {
+                    failureStep.getAttachments().addAll(getAttachments(activityFailure.get(ATTACHMENTS).get(VALUES)));
+                }
+                step.getSteps().add(failureStep);
+                step.setStatus(failedStatus);
+                step.setStatusDetails(failedDetails);
+                context.getPath().forEach(item -> {
+                    item.setStatusDetails(failedDetails);
+                    item.setStatus(failedStatus);
+                });
+            }
+        }
         context.getCurrent().getSteps().add(step);
     }
 
@@ -208,15 +248,6 @@ public class Allure2ExportFormatter implements ExportFormatter {
             attachments.add(attachment);
         }
         return attachments;
-    }
-
-    private Optional<StepResult> getLastFailed(final List<StepResult> steps) {
-        if (isNull(steps)) {
-            return Optional.empty();
-        }
-        return steps.stream()
-                .filter(s -> !s.getStatus().equals(Status.PASSED))
-                .reduce((first, second) -> second);
     }
 
     private Status getTestStatus(final JsonNode node) {
@@ -252,6 +283,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
         private TestResult result;
         private ExecutableItem current;
         private List<ExecutableItem> path;
+        private Map<String, JsonNode> failures;
 
         public TestResult getResult() {
             return result;
@@ -280,13 +312,23 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return this;
         }
 
+        public Map<String, JsonNode> getFailures() {
+            return this.failures;
+        }
+
+        public StepContext setFailures(final Map<String, JsonNode> failures) {
+            this.failures = failures;
+            return this;
+        }
+
         public StepContext child(final ExecutableItem next) {
             final List<ExecutableItem> nextPath = new ArrayList<>(path);
             nextPath.add(next);
             return new StepContext()
                     .setResult(result)
                     .setCurrent(next)
-                    .setPath(nextPath);
+                    .setPath(nextPath)
+                    .setFailures(this.getFailures());
 
         }
     }

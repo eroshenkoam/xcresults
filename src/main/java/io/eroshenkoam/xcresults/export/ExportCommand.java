@@ -40,6 +40,7 @@ public class ExportCommand implements Runnable {
     private static final String TESTS = "tests";
     private static final String SUBTESTS = "subtests";
 
+    private static final String FAILURE_SUMMARIES = "failureSummaries";
     private static final String ACTIVITY_SUMMARIES = "activitySummaries";
     private static final String SUBACTIVITIES = "subactivities";
 
@@ -140,6 +141,11 @@ public class ExportCommand implements Runnable {
             if (testSummary.has(ACTIVITY_SUMMARIES)) {
                 for (final JsonNode activity : testSummary.get(ACTIVITY_SUMMARIES).get(VALUES)) {
                     attachmentsRefs.putAll(getAttachmentRefs(activity));
+                }
+            }
+            if (testSummary.has(FAILURE_SUMMARIES)) {
+                for (final JsonNode failure : testSummary.get(FAILURE_SUMMARIES).get(VALUES)) {
+                    attachmentsRefs.putAll(getAttachmentRefs(failure));
                 }
             }
         });
