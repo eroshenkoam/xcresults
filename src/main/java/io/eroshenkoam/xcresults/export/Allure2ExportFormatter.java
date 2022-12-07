@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static io.eroshenkoam.xcresults.export.ExportCommand.FILE_EXTENSION_HEIC;
 import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
@@ -99,16 +98,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (topLevelFailure.isPresent()) {
             final StepResult failStep = topLevelFailure.get();
             final List<StepResult> steps = context.getResult().getSteps();
-            int position = 0;
-            for (int i = 0; i < steps.size(); i++) {
-                final StepResult prevStep = steps.get(i == 0 ? 0 : i - 1);
-                final StepResult currStep = steps.get(i);
-                if (prevStep.getStop() <= failStep.getStart() && failStep.getStop() <= currStep.getStart()) {
-                    position = i;
-                    break;
-                }
-            }
-            steps.add(position, failStep);
+            steps.add(getPosition(steps, failStep), failStep);
             result.setStatus(failStep.getStatus());
             result.setStatusDetails(failStep.getStatusDetails());
         }
@@ -257,6 +247,19 @@ public class Allure2ExportFormatter implements ExportFormatter {
             attachments.add(attachment);
         }
         return attachments;
+    }
+
+    private int getPosition(final List<StepResult> steps, final StepResult step) {
+        int position = 0;
+        for (int i = 0; i < steps.size(); i++) {
+            final StepResult prevStep = steps.get(i == 0 ? 0 : i - 1);
+            final StepResult currStep = steps.get(i);
+            if (prevStep.getStop() <= step.getStart() && step.getStop() <= currStep.getStart()) {
+                position = i;
+                break;
+            }
+        }
+        return position;
     }
 
     private Status getTestStatus(final JsonNode node) {
