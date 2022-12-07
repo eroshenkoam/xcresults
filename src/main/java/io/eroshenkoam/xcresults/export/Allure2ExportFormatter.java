@@ -115,6 +115,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 result.setStop(result.getStart() + durationToMillis);
             }
             if (result.getSteps().size() > 0) {
+                result.setStart(result.getSteps().get(0).getStart());
                 result.setStop(result.getSteps().get(result.getSteps().size() - 1).getStop());
             }
         }
