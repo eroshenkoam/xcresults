@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static io.eroshenkoam.xcresults.export.ExportCommand.FILE_EXTENSION_HEIC;
 import static io.eroshenkoam.xcresults.util.ParseUtil.parseDate;
@@ -31,6 +32,8 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String DURATION = "duration";
     private static final String STATUS = "testStatus";
     private static final String FAILURE_SUMMARIES = "failureSummaries";
+
+    private static final String FAILURE_IS_TOP_LEVEL = "isTopLevelFailure";
 
     private static final String ACTIVITY_SUMMARIES = "activitySummaries";
     private static final String ACTIVITY_TYPE = "activityType";
@@ -72,22 +75,42 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (node.has(STATUS)) {
             result.setStatus(getTestStatus(node));
         }
+        final StepContext context = new StepContext()
+                .setResult(result)
+                .setCurrent(result)
+                .setPath(Collections.singletonList(result));
+        context.setFailures(new HashMap<>());
+        if (node.has(FAILURE_SUMMARIES)) {
+            node.get(FAILURE_SUMMARIES).get(VALUES).forEach(failure -> {
+                final String key = failure.get(ACTIVITY_UUID).get(VALUE).asText();
+                context.getFailures().put(key, failure);
+            });
+        }
         if (node.has(ACTIVITY_SUMMARIES)) {
             final Iterable<JsonNode> activities = node.get(ACTIVITY_SUMMARIES).get(VALUES);
             for (JsonNode activity : activities) {
-                final StepContext context = new StepContext()
-                        .setResult(result)
-                        .setCurrent(result)
-                        .setPath(Collections.singletonList(result));
-                if (node.has(FAILURE_SUMMARIES)) {
-                    final Map<String, JsonNode> failures = new HashMap<>();
-                    node.get(FAILURE_SUMMARIES).get(VALUES).forEach(failure -> {
-                        failures.put(failure.get(ACTIVITY_UUID).get(VALUE).asText(), failure);
-                    });
-                    context.setFailures(failures);
-                }
                 parseStep(activity, context);
             }
+        }
+        final Optional<StepResult> topLevelFailure = context.getFailures().values().stream()
+                .filter(f -> f.get(FAILURE_IS_TOP_LEVEL).get(VALUE).asBoolean())
+                .map(this::getFailureStep)
+                .findFirst();
+        if (topLevelFailure.isPresent()) {
+            final StepResult failStep = topLevelFailure.get();
+            final List<StepResult> steps = context.getResult().getSteps();
+            int position = 0;
+            for (int i = 0; i < steps.size(); i++) {
+                final StepResult prevStep = steps.get(i == 0 ? 0 : i - 1);
+                final StepResult currStep = steps.get(i);
+                if (prevStep.getStop() <= failStep.getStart() && failStep.getStop() <= currStep.getStart()) {
+                    position = i;
+                    break;
+                }
+            }
+            steps.add(position, failStep);
+            result.setStatus(failStep.getStatus());
+            result.setStatusDetails(failStep.getStatusDetails());
         }
         meta.getLabels().forEach((name, value) -> {
             result.getLabels().add(new Label().setName(name).setValue(value));
@@ -207,27 +230,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
             final Iterable<JsonNode> activityFailures = activity.get(ACTIVITY_FAILURE_SUMMARY_IDS).get(VALUES);
             for (JsonNode activityFailureUuid : activityFailures) {
                 final String uuid = activityFailureUuid.get(VALUE).asText();
-                final JsonNode activityFailure = context.getFailures().get(uuid);
-                final Long timestamp = parseDate(activityFailure.get(FAILURE_TIMESTAMP).get(VALUE).asText());
-                final String message = activityFailure.get(FAILURE_MESSAGE).get(VALUE).asText();
-                final Status failedStatus = Status.FAILED;
-                final StatusDetails failedDetails = new StatusDetails()
-                        .setMessage(message);
-                final StepResult failureStep = new StepResult()
-                        .setStatus(failedStatus)
-                        .setName(message)
-                        .setStart(timestamp)
-                        .setStop(timestamp);
-                failureStep.setStatusDetails(failedDetails);
-                if (activityFailure.has(ATTACHMENTS)) {
-                    failureStep.getAttachments().addAll(getAttachments(activityFailure.get(ATTACHMENTS).get(VALUES)));
-                }
+                final StepResult failureStep = getFailureStep(context.getFailures().get(uuid));
                 step.getSteps().add(failureStep);
-                step.setStatus(failedStatus);
-                step.setStatusDetails(failedDetails);
+                step.setStatus(failureStep.getStatus());
+                step.setStatusDetails(failureStep.getStatusDetails());
                 context.getPath().forEach(item -> {
-                    item.setStatusDetails(failedDetails);
-                    item.setStatus(failedStatus);
+                    item.setStatusDetails(failureStep.getStatusDetails());
+                    item.setStatus(failureStep.getStatus());
                 });
             }
         }
@@ -276,6 +285,24 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return Optional.of(node.get(ACTIVITY_TYPE).get(VALUE).asText());
         }
         return Optional.empty();
+    }
+
+    private StepResult getFailureStep(final JsonNode activityFailure) {
+        final Long timestamp = parseDate(activityFailure.get(FAILURE_TIMESTAMP).get(VALUE).asText());
+        final String message = activityFailure.get(FAILURE_MESSAGE).get(VALUE).asText();
+        final Status failedStatus = Status.FAILED;
+        final StatusDetails failedDetails = new StatusDetails()
+                .setMessage(message);
+        final StepResult failureStep = new StepResult()
+                .setStatus(failedStatus)
+                .setName(message)
+                .setStart(timestamp)
+                .setStop(timestamp);
+        failureStep.setStatusDetails(failedDetails);
+        if (activityFailure.has(ATTACHMENTS)) {
+            failureStep.getAttachments().addAll(getAttachments(activityFailure.get(ATTACHMENTS).get(VALUES)));
+        }
+        return failureStep;
     }
 
     private class StepContext {
