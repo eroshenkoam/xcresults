@@ -92,7 +92,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
             }
         }
         final Optional<StepResult> topLevelFailure = context.getFailures().values().stream()
-                .filter(f -> f.get(FAILURE_IS_TOP_LEVEL).get(VALUE).asBoolean())
+                .filter(this::isTopLevelFailure)
                 .map(this::getFailureStep)
                 .findFirst();
         if (topLevelFailure.isPresent()) {
@@ -289,6 +289,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return Optional.of(node.get(ACTIVITY_TYPE).get(VALUE).asText());
         }
         return Optional.empty();
+    }
+
+    private Boolean isTopLevelFailure(final JsonNode activityFailure) {
+        if (activityFailure.has(FAILURE_IS_TOP_LEVEL)) {
+            return activityFailure.get(FAILURE_IS_TOP_LEVEL).get(VALUE).asBoolean();
+        }
+        return false;
     }
 
     private StepResult getFailureStep(final JsonNode activityFailure) {
