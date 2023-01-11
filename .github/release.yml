@@ -1,0 +1,10 @@
+# release.yml
+
+changelog:
+  categories:
+    - title: '🔬 Improvements'
+      labels:
+        - 'enhancement'
+    - title: '🐞 Bug Fixes'
+      labels:
+        - 'bug'
