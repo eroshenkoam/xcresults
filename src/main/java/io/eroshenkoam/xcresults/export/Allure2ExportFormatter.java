@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.eroshenkoam.xcresults.export.ExportCommand.FILE_EXTENSION_HEIC;
+import static io.eroshenkoam.xcresults.util.FormatUtil.getAttachmentFileName;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
 import static java.util.Objects.isNull;
 
@@ -240,11 +241,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
         for (JsonNode node : nodes) {
             final String originalFileName = node.get(FILENAME).get(VALUE).asText();
             final String fileExtension = FilenameUtils.getExtension(originalFileName);
+            final String sources = getAttachmentFileName(fileExtension);
             final String fileName = FILE_EXTENSION_HEIC.equals(fileExtension)
                     ? String.format("%s.%s", FilenameUtils.getBaseName(originalFileName), "jpeg")
                     : originalFileName;
             final Attachment attachment = new Attachment()
-                    .setSource(fileName)
+                    .setSource(sources)
                     .setName(fileName);
             attachments.add(attachment);
         }

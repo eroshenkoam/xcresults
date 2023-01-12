@@ -144,16 +144,15 @@ public class ExportCommand implements Runnable {
 
             final Map<String, List<String>> attachmentSources = getAttachmentSources(testResult);
             final List<JsonNode> summaries = new ArrayList<>();
-            Optional.ofNullable(testSummary.get(ACTIVITY_SUMMARIES))
-                    .map(a -> a.get(VALUES))
-                    .ifPresent(summaries::add);
-            Optional.ofNullable(testSummary.get(FAILURE_SUMMARIES))
-                    .map(a -> a.get(VALUES))
-                    .ifPresent(summaries::add);
-            summaries.stream().map(this::getAttachmentRefs).flatMap(m -> m.entrySet().stream()).forEach(e -> {
-                final String name = e.getKey();
-                final String ref = e.getValue();
-                attachmentSources.get(name).forEach(source -> attachmentsRefs.put(source, ref));
+            summaries.addAll(getAttributeValues(testSummary, ACTIVITY_SUMMARIES));
+            summaries.addAll(getAttributeValues(testSummary, FAILURE_SUMMARIES));
+            summaries.forEach(summary -> {
+                getAttachmentRefs(summary).forEach((name, ref) -> {
+                    if (attachmentSources.containsKey(name)) {
+                        final List<String> sources = attachmentSources.get(name);
+                        sources.forEach(source -> attachmentsRefs.put(source, ref));
+                    }
+                });
             });
         }
         System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
@@ -174,17 +173,15 @@ public class ExportCommand implements Runnable {
 
     private Map<String, List<String>> getAttachmentSources(final ExecutableItem executableItem) {
         final Map<String, List<String>> attachments = new HashMap<>();
-        if (Objects.nonNull(executableItem)) {
-            if (Objects.nonNull(executableItem.getAttachments())) {
-                executableItem.getAttachments().forEach(a -> {
-                    final List<String> sources = attachments.getOrDefault(a.getName(), new ArrayList<>());
-                    sources.add(a.getSource());
-                    attachments.put(a.getName(), sources);
-                });
-            }
-            if (Objects.nonNull(executableItem.getSteps())) {
-                executableItem.getSteps().forEach(s -> attachments.putAll(getAttachmentSources(s)));
-            }
+        if (Objects.nonNull(executableItem.getAttachments())) {
+            executableItem.getAttachments().forEach(a -> {
+                final List<String> sources = attachments.getOrDefault(a.getName(), new ArrayList<>());
+                sources.add(a.getSource());
+                attachments.put(a.getName(), sources);
+            });
+        }
+        if (Objects.nonNull(executableItem.getSteps())) {
+            executableItem.getSteps().forEach(s -> attachments.putAll(getAttachmentSources(s)));
         }
         return attachments;
     }
@@ -225,6 +222,14 @@ public class ExportCommand implements Runnable {
             }
         }
         return summaries;
+    }
+
+    private List<JsonNode> getAttributeValues(final JsonNode node, final String attributeName) {
+        final List<JsonNode> result = new ArrayList<>();
+        if (node.has(attributeName) && node.get(attributeName).has(VALUES)) {
+            node.get(attributeName).get(VALUES).forEach(result::add);
+        }
+        return result;
     }
 
     private JsonNode readSummary() {
