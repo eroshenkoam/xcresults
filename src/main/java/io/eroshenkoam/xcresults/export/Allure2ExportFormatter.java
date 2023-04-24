@@ -46,6 +46,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private static final String FAILURE_MESSAGE = "message";
     private static final String FAILURE_TIMESTAMP = "timestamp";
 
+    private static final String SOURCE_CODE_CONTEXT = "sourceCodeContext";
+    private static final String SYMBOL_INFO = "symbolInfo";
+    private static final String CALL_STACK = "callStack";
+    private static final String LOCATION = "location";
+    private static final String FILE_PATH = "filePath";
+    private static final String LINE_NUMBER = "lineNumber";
+
     private static final String SUBACTIVITIES = "subactivities";
 
     private static final String ATTACHMENTS = "attachments";
@@ -304,9 +311,11 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private StepResult getFailureStep(final JsonNode activityFailure) {
         final Long timestamp = parseDate(activityFailure.get(FAILURE_TIMESTAMP).get(VALUE).asText());
         final String message = activityFailure.get(FAILURE_MESSAGE).get(VALUE).asText();
+        final String trace = getStackTrace(activityFailure);
         final Status failedStatus = Status.FAILED;
         final StatusDetails failedDetails = new StatusDetails()
-                .setMessage(message);
+                .setMessage(message)
+                .setTrace(trace);
         final StepResult failureStep = new StepResult()
                 .setStatus(failedStatus)
                 .setName(message)
@@ -317,6 +326,32 @@ public class Allure2ExportFormatter implements ExportFormatter {
             failureStep.getAttachments().addAll(getAttachments(activityFailure.get(ATTACHMENTS).get(VALUES)));
         }
         return failureStep;
+    }
+
+    private String getStackTrace(final JsonNode activityFailure) {
+        if (activityFailure.has(SOURCE_CODE_CONTEXT)) {
+            final JsonNode context = activityFailure.get(SOURCE_CODE_CONTEXT);
+            if (context.has(CALL_STACK)) {
+                final List<String> lines = new ArrayList<>();
+                for (JsonNode line : context.findValue(CALL_STACK).get(VALUES)) {
+                    Optional.ofNullable(line.get(SYMBOL_INFO))
+                            .map(v -> v.findValue(LOCATION))
+                            .flatMap(this::getFileLineNumber)
+                            .ifPresent(lines::add);
+                }
+                return String.join("\n", lines);
+            }
+        }
+        return null;
+    }
+
+    private Optional<String> getFileLineNumber(final JsonNode location) {
+        if (location.has(FILE_PATH) && location.has(LINE_NUMBER)) {
+            final String filePath = location.get(FILE_PATH).get(VALUE).asText();
+            final String lineNumber = location.get(LINE_NUMBER).get(VALUE).asText();
+            return Optional.of(String.format("%s:%s", filePath, lineNumber));
+        }
+        return Optional.empty();
     }
 
     private class StepContext {
