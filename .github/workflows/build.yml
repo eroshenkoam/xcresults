@@ -17,3 +17,8 @@ jobs:
           cache: 'gradle'
       - run: ./gradlew build
       - run: ./gradlew nativeImage
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ./build/graal/xcresults
+          path: xcresults
+          retention-days: 2
