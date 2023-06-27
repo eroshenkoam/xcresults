@@ -39,6 +39,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.10.2")
     implementation("io.qameta.allure:allure-model:2.13.1")
+    implementation("org.freemarker:freemarker:2.3.32")
     implementation("info.picocli:picocli:4.1.4")
     implementation("commons-io:commons-io:2.6")
 
