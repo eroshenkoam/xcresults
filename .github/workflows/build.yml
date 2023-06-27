@@ -19,6 +19,6 @@ jobs:
       - run: ./gradlew nativeImage
       - uses: actions/upload-artifact@v3
         with:
-          name: ./build/graal/xcresults
-          path: xcresults
+          path: ./build/graal/xcresults
+          name: xcresults
           retention-days: 2
