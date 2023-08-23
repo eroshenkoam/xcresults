@@ -16,5 +16,5 @@ jobs:
           java-version: '11'
           cache: 'gradle'
       - run: ./gradlew build
-      - run: ./gradlew nativeImage
+      - run: ./gradlew nativeCompile
       - run: ./build/graal/xcresults test
