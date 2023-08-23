@@ -13,12 +13,11 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '11'
           cache: 'gradle'
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
-          version: '23.0.1'
+          java-version: '11'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
       - run: ./build/graal/xcresults test
