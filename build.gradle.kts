@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.palantir.graal") version("0.12.0")
+    id("org.graalvm.buildtools.native") version "0.9.24"
 }
 
 group = "org.example"
@@ -22,12 +22,13 @@ tasks.withType(JavaCompile::class) {
     options.encoding = "UTF-8"
 }
 
-graal {
-    graalVersion("22.2.0")
-    javaVersion("11")
-
-    mainClass("io.eroshenkoam.xcresults.XCResults")
-    outputName("xcresults")
+graalvmNative {
+    toolchainDetection.set(true)
+    binaries {
+        named("main") {
+            mainClass.set("io.eroshenkoam.xcresults.XCResults")
+        }
+    }
 }
 
 repositories {
