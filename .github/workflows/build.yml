@@ -16,4 +16,4 @@ jobs:
           distribution: 'graalvm'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
-      - run: ./build/graal/xcresults test
+      - run: ./build/native/nativeCompile/xcresults test
