@@ -5,7 +5,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "xcresult", mixinStandardHelpOptions = true,
-        subcommands = {TestCommand.class, ExportCommand.class}
+        subcommands = {ExportCommand.class}
 )
 public class MainCommand implements Runnable {
 
