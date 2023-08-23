@@ -17,4 +17,4 @@ jobs:
           cache: 'gradle'
       - run: ./gradlew build
       - run: ./gradlew nativeImage
-      - run: ./xcresults test
+      - run: ./build/graal/xcresults test
