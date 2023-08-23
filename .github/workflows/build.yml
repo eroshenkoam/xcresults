@@ -16,8 +16,6 @@ jobs:
           java-version: '11'
           cache: 'gradle'
       - uses: graalvm/setup-graalvm@v1
-        with:
-          java-version: '11'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
       - run: ./build/graal/xcresults test
