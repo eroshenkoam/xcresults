@@ -281,6 +281,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
 
         switch (status) {
             case "Success":
+            case "Expected Failure":
                 return Status.PASSED;
             case "Failure":
                 return Status.FAILED;
