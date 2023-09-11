@@ -29,9 +29,18 @@ public class CarouselPostProcessor implements ExportPostProcessor {
     private final ObjectMapper mapper = new ObjectMapper()
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
+    private final String templatePath;
+
+    public CarouselPostProcessor(final String templatePath) {
+        this.templatePath = templatePath;
+    }
+
     @Override
     public void processTestResults(final Path outputPath, final Map<Path, TestResult> testResults) {
         System.out.println("Carousel attachment feature enabled");
+        Optional.ofNullable(templatePath)
+                .map(t -> String.format("Carousel template: %s", t))
+                .ifPresent(System.out::println);
         testResults.forEach((path, result) -> processTestResult(outputPath, path, result));
     }
 
@@ -45,9 +54,12 @@ public class CarouselPostProcessor implements ExportPostProcessor {
         if (carouselImages.size() == 0) {
             return;
         }
-        final Carousel carousel = new Carousel(carouselImages);
         try {
-            final String carouselContent = FreemarkerUtil.render("templates/carousel.ftl", Map.of("carousel", carousel));
+            final Carousel carousel = new Carousel(carouselImages);
+            final Map<String, Object> data = Map.of("carousel", carousel);
+            final String carouselContent = Objects.nonNull(templatePath)
+                    ? FreemarkerUtil.render(Path.of(templatePath), data)
+                    : FreemarkerUtil.render("templates/carousel.ftl", data);
             final Path carouselPath = outputPath.resolve(getAttachmentFileName("html"));
             Files.write(carouselPath, carouselContent.getBytes(StandardCharsets.UTF_8));
             testResult.getAttachments().add(new Attachment()

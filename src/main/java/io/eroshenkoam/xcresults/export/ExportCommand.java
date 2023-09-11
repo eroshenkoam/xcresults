@@ -77,6 +77,12 @@ public class ExportCommand implements Runnable {
     )
     private Boolean addCarouselAttachment;
 
+    @CommandLine.Option(
+            names = {"--carousel-template-path"},
+            description = "Carousel attachment template path"
+    )
+    private String carouselTemplatePath;
+
     @CommandLine.Parameters(
             index = "0",
             description = "The directories with *.xcresults"
@@ -171,8 +177,8 @@ public class ExportCommand implements Runnable {
             exportReference(attachmentRef, attachmentPath);
         }
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
-        if (Objects.nonNull(addCarouselAttachment) && addCarouselAttachment) {
-            postProcessors.add(new CarouselPostProcessor());
+        if (Objects.nonNull(addCarouselAttachment)) {
+            postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
         }
         postProcessors.forEach(postProcessor -> postProcessor.processTestResults(outputPath, testResults));
     }

@@ -7,6 +7,8 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 public class FreemarkerUtil {
@@ -14,14 +16,17 @@ public class FreemarkerUtil {
     private FreemarkerUtil() {
     }
 
+    public static String render(final Path templatePath, final Map<String, Object> data)
+            throws IOException, TemplateException {
+        final Template template = new Template(
+                templatePath.getFileName().toString(), Files.readString(templatePath), getDefaultConfiguration()
+        );
+        return render(template, data);
+    }
+
     public static String render(final String templateName, final Map<String, Object> data)
             throws IOException, TemplateException {
-        final Configuration configuration = getDefaultConfiguration();
-        Template temp = configuration.getTemplate(templateName);
-        try (StringWriter result = new StringWriter()) {
-            temp.process(data, result);
-            return result.toString();
-        }
+        return render(getDefaultConfiguration().getTemplate(templateName), data);
     }
 
     public static Configuration getDefaultConfiguration() {
@@ -33,6 +38,14 @@ public class FreemarkerUtil {
         configuration.setWrapUncheckedExceptions(true);
         configuration.setFallbackOnNullLoopVariable(false);
         return configuration;
+    }
+
+    private static String render(final Template template, final Map<String, Object> data)
+            throws IOException, TemplateException {
+        try (StringWriter result = new StringWriter()) {
+            template.process(data, result);
+            return result.toString();
+        }
     }
 
 }
