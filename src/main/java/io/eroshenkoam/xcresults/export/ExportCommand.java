@@ -3,6 +3,7 @@ package io.eroshenkoam.xcresults.export;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.eroshenkoam.xcresults.carousel.CarouselPostProcessor;
 import io.qameta.allure.model.ExecutableItem;
 import io.qameta.allure.model.TestResult;
 import org.apache.commons.io.FileUtils;
@@ -70,6 +71,18 @@ public class ExportCommand implements Runnable {
     )
     protected ExportFormat format = ExportFormat.allure2;
 
+    @CommandLine.Option(
+            names = {"--add-carousel-attachment"},
+            description = "Add carousel attachment to test results"
+    )
+    private Boolean addCarouselAttachment;
+
+    @CommandLine.Option(
+            names = {"--carousel-template-path"},
+            description = "Carousel attachment template path"
+    )
+    private String carouselTemplatePath;
+
     @CommandLine.Parameters(
             index = "0",
             description = "The directories with *.xcresults"
@@ -134,6 +147,7 @@ public class ExportCommand implements Runnable {
 
         System.out.printf("Export information about %s test summaries...%n", testSummaries.size());
         final Map<String, String> attachmentsRefs = new HashMap<>();
+        final Map<Path, TestResult> testResults = new HashMap<>();
         for (final Map.Entry<JsonNode, ExportMeta> entry : testSummaries.entrySet()) {
             final JsonNode testSummary = entry.getKey();
             final ExportMeta meta = entry.getValue();
@@ -154,6 +168,7 @@ public class ExportCommand implements Runnable {
                     }
                 });
             });
+            testResults.put(testSummaryPath, testResult);
         }
         System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
         for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
@@ -161,6 +176,11 @@ public class ExportCommand implements Runnable {
             final Path attachmentPath = outputPath.resolve(attachment.getKey());
             exportReference(attachmentRef, attachmentPath);
         }
+        final List<ExportPostProcessor> postProcessors = new ArrayList<>();
+        if (Objects.nonNull(addCarouselAttachment)) {
+            postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
+        }
+        postProcessors.forEach(postProcessor -> postProcessor.processTestResults(outputPath, testResults));
     }
 
     private ExportMeta getTestMeta(final ExportMeta meta, final JsonNode testableSummary) {
