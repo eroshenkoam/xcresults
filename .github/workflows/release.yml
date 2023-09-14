@@ -9,13 +9,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: graalvm/setup-graalvm@v1
         with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle'
-      - run: echo "::set-output name=name::${GITHUB_REF:10}"
-        id: version
+          java-version: '17'
+          distribution: 'graalvm'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
       - uses: actions/upload-release-asset@v1.0.1
