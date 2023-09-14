@@ -17,7 +17,7 @@ jobs:
       - run: echo "::set-output name=name::${GITHUB_REF:10}"
         id: version
       - run: ./gradlew build
-      - run: ./gradlew nativeImage
+      - run: ./gradlew nativeCompile
       - uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
