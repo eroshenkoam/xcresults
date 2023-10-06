@@ -180,11 +180,11 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return;
         }
 
+        if (activity.has(ATTACHMENTS)) {
+            context.getCurrent().getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
+        }
         if (activityTitle.startsWith("Start Test at") && activity.has(ACTIVITY_START)) {
             context.getResult().setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
-            if (activity.has(ATTACHMENTS)) {
-                context.getResult().getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
-            }
             return;
         }
 
@@ -224,9 +224,6 @@ public class Allure2ExportFormatter implements ExportFormatter {
             for (JsonNode subActivity : activity.get(SUBACTIVITIES).get(VALUES)) {
                 parseStep(subActivity, context.child(step));
             }
-        }
-        if (activity.has(ATTACHMENTS)) {
-            step.getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
         }
         if (activity.has(ACTIVITY_FAILURE_SUMMARY_IDS)) {
             final Iterable<JsonNode> activityFailures = activity.get(ACTIVITY_FAILURE_SUMMARY_IDS).get(VALUES);
