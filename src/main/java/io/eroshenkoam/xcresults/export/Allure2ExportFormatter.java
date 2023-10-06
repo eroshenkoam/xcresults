@@ -182,6 +182,9 @@ public class Allure2ExportFormatter implements ExportFormatter {
 
         if (activityTitle.startsWith("Start Test at") && activity.has(ACTIVITY_START)) {
             context.getResult().setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
+            if (activity.has(ATTACHMENTS)) {
+                context.getResult().getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
+            }
             return;
         }
 
