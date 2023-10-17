@@ -180,11 +180,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             return;
         }
 
-        if (activity.has(ATTACHMENTS)) {
-            context.getCurrent().getAttachments().addAll(getAttachments(activity.get(ATTACHMENTS).get(VALUES)));
-        }
+        final Optional<List<Attachment>> attachments = Optional.ofNullable(activity.get(ATTACHMENTS))
+                .map(a -> a.get(VALUES))
+                .map(this::getAttachments);
         if (activityTitle.startsWith("Start Test at") && activity.has(ACTIVITY_START)) {
             context.getResult().setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
+            attachments.ifPresent(context.getCurrent().getAttachments()::addAll);
             return;
         }
 
@@ -193,6 +194,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setStatus(Status.PASSED)
                 .setSteps(new ArrayList<>())
                 .setAttachments(new ArrayList<>());
+        attachments.ifPresent(step.getAttachments()::addAll);
 
         final boolean hasAssertionMessage = activityTitle.startsWith("Assertion Failure")
                 || activityTitle.contains("Test skipped");
