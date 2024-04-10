@@ -20,7 +20,11 @@ Below are a few examples of common commands. For further assistance, use the --h
 
 ### Export to Allure2 results
 
-`xcresults export /path/to/Test.xcresult /path/to/outputDirectory`
+Single source:
+`xcresults export /path/to/Test.xcresult -o /path/to/outputDirectory`
+
+Multiple sources:
+`xcresults export /path/to/First.xcresult /path/to/Second.xcresult -o /path/to/outputDirectory`
 
 After that you can generate Allure report by following command: 
 
