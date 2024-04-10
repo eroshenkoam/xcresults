@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.eroshenkoam.xcresults.export.ExportCommand.FILE_EXTENSION_HEIC;
+import static io.eroshenkoam.xcresults.export.ExportProcessor.FILE_EXTENSION_HEIC;
 import static io.eroshenkoam.xcresults.util.FormatUtil.getAttachmentFileName;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
 import static java.util.Objects.isNull;
