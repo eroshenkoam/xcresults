@@ -230,6 +230,7 @@ public class ExportProcessor {
                 "xcrun",
                 "xcresulttool",
                 "get",
+                "--legacy",
                 "--format", "json",
                 "--path", inputPath.toAbsolutePath().toString()
         );
@@ -242,6 +243,7 @@ public class ExportProcessor {
                 "xcrun",
                 "xcresulttool",
                 "get",
+                "--legacy",
                 "--format", "json",
                 "--path", inputPath.toAbsolutePath().toString(),
                 "--id", id
