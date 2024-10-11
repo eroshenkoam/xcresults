@@ -257,14 +257,17 @@ public class ExportProcessor {
                 "xcrun",
                 "xcresulttool",
                 "export",
-                "--type", "file",
                 "--path", inputPath.toAbsolutePath().toString(),
+                "--type", "file",
+                "--output-path", output.toAbsolutePath().toString(),
                 "--id", id,
-                "--output-path", output.toAbsolutePath().toString()
+                "--legacy"
         );
-        readProcessOutput(exportBuilder);
-        if (FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(output.toString()))) {
-            convertHeicToJpeg(output);
+
+        try {
+            exportBuilder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
