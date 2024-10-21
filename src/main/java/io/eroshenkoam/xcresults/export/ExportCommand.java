@@ -3,11 +3,17 @@ package io.eroshenkoam.xcresults.export;
 import org.apache.commons.io.FileUtils;
 import picocli.CommandLine;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CommandLine.Command(
         name = "export", mixinStandardHelpOptions = true,
@@ -36,7 +42,7 @@ public class ExportCommand implements Runnable {
     @CommandLine.Parameters(
             description = "The directories with *.xcresults"
     )
-    protected List<Path> inputPath;
+    protected List<String> inputPath;
 
     @CommandLine.Option(
             names = {"-o", "--output"},
@@ -58,7 +64,7 @@ public class ExportCommand implements Runnable {
                 FileUtils.deleteDirectory(output.toFile());
             }
             Files.createDirectories(output);
-            for (Path path: input) {
+            for (Path path : input) {
                 runUnsafe(path, output);
             }
         } catch (Exception e) {
@@ -66,7 +72,7 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private void runUnsafe(final Path input, final Path output) throws Exception  {
+    private void runUnsafe(final Path input, final Path output) throws Exception {
         System.out.printf("Export xcresults from [%s] to [%s]\n", input, output);
         final ExportProcessor processor = new ExportProcessor(
                 input, output, addCarouselAttachment, carouselTemplatePath
@@ -76,17 +82,37 @@ public class ExportCommand implements Runnable {
 
     private List<Path> getInputPaths() {
         if (inputPath.size() == 2 && Objects.isNull(outputPath)) {
-            return Arrays.asList(inputPath.get(0));
+            return findGlob(inputPath.get(0));
         } else {
-            return inputPath;
+            return inputPath.stream()
+                    .flatMap(i -> findGlob(i).stream())
+                    .collect(Collectors.toList());
         }
     }
 
     private Path getOutputPath() {
         if (inputPath.size() == 2 && Objects.isNull(outputPath)) {
-            return inputPath.get(1);
+            return Path.of(inputPath.get(1));
         } else {
             return outputPath;
+        }
+    }
+
+    private List<Path> findGlob(final String input) {
+        final Path path = Paths.get(input);
+        if (path.isAbsolute()) {
+            return List.of(path);
+        }
+        final Path workDir = Path.of(Optional.ofNullable(System.getProperty("user.dir")).orElse(""));
+        final String pattern = String.format("glob:%s", input);
+        final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(pattern);
+        try (final Stream<Path> walk = Files.walk(workDir)) {
+            return walk.map(workDir::relativize)
+                    .filter(pathMatcher::matches)
+                    .map(workDir::resolve)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            return List.of();
         }
     }
 

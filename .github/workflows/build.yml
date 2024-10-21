@@ -16,3 +16,7 @@ jobs:
           distribution: 'graalvm'
       - run: ./gradlew build
       - run: ./gradlew nativeCompile
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./build/native/nativeCompile/xcresults
+          name: xcresults
