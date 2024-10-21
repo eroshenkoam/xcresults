@@ -3,16 +3,14 @@ package io.eroshenkoam.xcresults.export;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import freemarker.template.Version;
 import io.eroshenkoam.xcresults.carousel.CarouselPostProcessor;
 import io.qameta.allure.model.ExecutableItem;
 import io.qameta.allure.model.TestResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +20,7 @@ import java.util.Objects;
 
 import static io.eroshenkoam.xcresults.util.FormatUtil.getResultFilePath;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
+import static io.eroshenkoam.xcresults.util.ProcessUtil.*;
 
 public class ExportProcessor {
 
@@ -61,7 +60,6 @@ public class ExportProcessor {
     private static final String TARGET_NAME = "targetName";
 
     private static final String TEST_REF = "testsRef";
-    private static String XCODE_VERSION = null;
 
     private final ObjectMapper mapper = new ObjectMapper()
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -225,54 +223,16 @@ public class ExportProcessor {
         }
         return result;
     }
-    
-    private static String getXcodeVersion() {
-        if (XCODE_VERSION == null) {
-            try {
-                ProcessBuilder processBuilder = new ProcessBuilder("xcodebuild", "-version");
-                Process process = processBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.startsWith("Xcode")) {
-                        // Extract the version number from the line
-                        XCODE_VERSION = line.split(" ")[1];
-                        break;
-                    }
-                }
-                reader.close();
-                process.waitFor();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return XCODE_VERSION;
-    }
-
-    private static int compareVersions(String version1, String version2) {
-        String[] parts1 = version1.split("\\.");
-        String[] parts2 = version2.split("\\.");
-
-        int major1 = Integer.parseInt(parts1[0]);
-        int minor1 = Integer.parseInt(parts1.length > 1 ? parts1[1] : "0");
-        int patch1 = Integer.parseInt(parts1.length > 2 ? parts1[2] : "0");
-
-        int major2 = Integer.parseInt(parts2[0]);
-        int minor2 = Integer.parseInt(parts2.length > 1 ? parts2[1] : "0");
-        int patch2 = Integer.parseInt(parts2.length > 2 ? parts2[2] : "0");
-
-        if (major1 != major2) {
-            return Integer.compare(major1, major2);
-        }
-        if (minor1 != minor2) {
-            return Integer.compare(minor1, minor2);
-        }
-        return Integer.compare(patch1, patch2);
-    }
 
     private static boolean isLegacyMode() {
-        String version = getXcodeVersion();
-        return compareVersions(version, "16.0") >= 0;
+        try {
+            final String output = readProcessOutputAsString(new ProcessBuilder("xcodebuild", "-version"));
+            final String versionLine = output.split("\n")[0];
+            final Version version = new Version(versionLine.replaceFirst("Xcode ", "").trim());
+            return version.getMajor() >= 16;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 
     private ProcessBuilder processBuilderForXCResultToolCommand(String... command) {
@@ -288,41 +248,33 @@ public class ExportProcessor {
 
     private JsonNode readSummary() {
         final ProcessBuilder builder = processBuilderForXCResultToolCommand(
-            "get",
-            "--format", "json",
-            "--path", inputPath.toAbsolutePath().toString()
+                "get",
+                "--format", "json",
+                "--path", inputPath.toAbsolutePath().toString()
         );
-        return readProcessOutput(builder);
+        return readProcessOutputAsJson(builder, mapper);
     }
 
     private JsonNode getReference(final String id) {
         final ProcessBuilder builder = processBuilderForXCResultToolCommand(
-            "get",
-            "--format", "json",
-            "--path", inputPath.toAbsolutePath().toString(),
-            "--id", id
+                "get",
+                "--format", "json",
+                "--path", inputPath.toAbsolutePath().toString(),
+                "--id", id
         );
-        return readProcessOutput(builder);
+        return readProcessOutputAsJson(builder, mapper);
     }
 
     private void exportReference(final String id, final Path output) {
         final ProcessBuilder exportBuilder = processBuilderForXCResultToolCommand(
-            "export",
-            "--type", "file",
-            "--path", inputPath.toAbsolutePath().toString(),
-            "--id", id,
-            "--output-path", output.toAbsolutePath().toString()
+                "export",
+                "--type", "file",
+                "--path", inputPath.toAbsolutePath().toString(),
+                "--id", id,
+                "--output-path", output.toAbsolutePath().toString()
         );
 
-        if (isLegacyMode()) {
-            try {
-                exportBuilder.start();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            readProcessOutput(exportBuilder);
-        }
+        readProcessOutput(exportBuilder, (i) -> null);
 
         if (FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(output.toString()))) {
             convertHeicToJpeg(output);
@@ -345,21 +297,6 @@ public class ExportProcessor {
             process.waitFor();
             FileUtils.deleteQuietly(heicPath.toFile());
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JsonNode readProcessOutput(final ProcessBuilder builder) {
-        try {
-            final Process process = builder.start();
-            try (InputStream input = process.getInputStream()) {
-                if (Objects.nonNull(input)) {
-                    return mapper.readTree(input);
-                } else {
-                    return null;
-                }
-            }
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
