@@ -6,3 +6,5 @@
 .gradle
 build
 
+# Project files
+CommandTest.java
