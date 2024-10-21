@@ -10,17 +10,21 @@ jobs:
     runs-on: ${{ matrix.agent }}
     strategy:
       matrix:
-        agent: [ "macos-12", "macos-13", "macos-14", "macos-15" ]
+        agent: [ "macos-13", "macos-15" ]
     steps:
-      - run: arch
-#      - uses: actions/checkout@v3
-#      - uses: graalvm/setup-graalvm@v1
-#        with:
-#          java-version: '17'
-#          distribution: 'graalvm'
-#      - run: ./gradlew build
-#      - run: ./gradlew nativeCompile
-#      - uses: actions/upload-artifact@v4
-#        with:
-#          name: xcresults
-#          path: ./build/native/nativeCompile/xcresults
+      - uses: actions/checkout@v3
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '17'
+          distribution: 'graalvm'
+      - run: ./gradlew build
+      - run: ./gradlew nativeCompile
+      - run: echo "ARCH=$(arch)" >> "$GITHUB_ENV"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcresults
+          path: ./build/native/nativeCompile/xcresults
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcresults-amd64
+          path: ./build/native/nativeCompile/xcresults
