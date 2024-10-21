@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ inputs.agent }}
+    runs-on: ${{ matrix.agent }}
     strategy:
       matrix:
-        agent: [ "macos-12", "macos-14" ]
+        agent: [ "macos-12", "macos-13", "macos-14", "macos-15" ]
     steps:
       - run: arch
 #      - uses: actions/checkout@v3
