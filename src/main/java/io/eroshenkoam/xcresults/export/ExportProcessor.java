@@ -9,9 +9,10 @@ import io.qameta.allure.model.TestResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +61,7 @@ public class ExportProcessor {
     private static final String TARGET_NAME = "targetName";
 
     private static final String TEST_REF = "testsRef";
+    private static String XCODE_VERSION = null;
 
     private final ObjectMapper mapper = new ObjectMapper()
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -223,44 +225,105 @@ public class ExportProcessor {
         }
         return result;
     }
+    
+    private static String getXcodeVersion() {
+        if (XCODE_VERSION == null) {
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder("xcodebuild", "-version");
+                Process process = processBuilder.start();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.startsWith("Xcode")) {
+                        // Extract the version number from the line
+                        XCODE_VERSION = line.split(" ")[1];
+                        break;
+                    }
+                }
+                reader.close();
+                process.waitFor();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return XCODE_VERSION;
+    }
+
+    private static int compareVersions(String version1, String version2) {
+        String[] parts1 = version1.split("\\.");
+        String[] parts2 = version2.split("\\.");
+
+        int major1 = Integer.parseInt(parts1[0]);
+        int minor1 = Integer.parseInt(parts1.length > 1 ? parts1[1] : "0");
+        int patch1 = Integer.parseInt(parts1.length > 2 ? parts1[2] : "0");
+
+        int major2 = Integer.parseInt(parts2[0]);
+        int minor2 = Integer.parseInt(parts2.length > 1 ? parts2[1] : "0");
+        int patch2 = Integer.parseInt(parts2.length > 2 ? parts2[2] : "0");
+
+        if (major1 != major2) {
+            return Integer.compare(major1, major2);
+        }
+        if (minor1 != minor2) {
+            return Integer.compare(minor1, minor2);
+        }
+        return Integer.compare(patch1, patch2);
+    }
+
+    private static boolean isLegacyMode() {
+        String version = getXcodeVersion();
+        return compareVersions(version, "16.0") >= 0;
+    }
+
+    private ProcessBuilder processBuilderForXCResultToolCommand(String... command) {
+        final ProcessBuilder builder = new ProcessBuilder();
+        builder.command(command);
+        builder.command().add(0, "xcrun");
+        builder.command().add(1, "xcresulttool");
+        if (isLegacyMode()) {
+            builder.command().add("--legacy");
+        }
+        return builder;
+    }
 
     private JsonNode readSummary() {
-        final ProcessBuilder builder = new ProcessBuilder();
-        builder.command(
-                "xcrun",
-                "xcresulttool",
-                "get",
-                "--format", "json",
-                "--path", inputPath.toAbsolutePath().toString()
+        final ProcessBuilder builder = processBuilderForXCResultToolCommand(
+            "get",
+            "--format", "json",
+            "--path", inputPath.toAbsolutePath().toString()
         );
         return readProcessOutput(builder);
     }
 
     private JsonNode getReference(final String id) {
-        final ProcessBuilder builder = new ProcessBuilder();
-        builder.command(
-                "xcrun",
-                "xcresulttool",
-                "get",
-                "--format", "json",
-                "--path", inputPath.toAbsolutePath().toString(),
-                "--id", id
+        final ProcessBuilder builder = processBuilderForXCResultToolCommand(
+            "get",
+            "--format", "json",
+            "--path", inputPath.toAbsolutePath().toString(),
+            "--id", id
         );
         return readProcessOutput(builder);
     }
 
     private void exportReference(final String id, final Path output) {
-        final ProcessBuilder exportBuilder = new ProcessBuilder();
-        exportBuilder.command(
-                "xcrun",
-                "xcresulttool",
-                "export",
-                "--type", "file",
-                "--path", inputPath.toAbsolutePath().toString(),
-                "--id", id,
-                "--output-path", output.toAbsolutePath().toString()
+        final ProcessBuilder exportBuilder = processBuilderForXCResultToolCommand(
+            "export",
+            "--type", "file",
+            "--path", inputPath.toAbsolutePath().toString(),
+            "--id", id,
+            "--output-path", output.toAbsolutePath().toString()
         );
-        readProcessOutput(exportBuilder);
+
+        if (isLegacyMode()) {
+            try {
+                exportBuilder.start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            readProcessOutput(exportBuilder);
+        }
+
         if (FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(output.toString()))) {
             convertHeicToJpeg(output);
         }
