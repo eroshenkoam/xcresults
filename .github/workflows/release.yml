@@ -6,20 +6,37 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.agent }}
+    strategy:
+      matrix:
+        agent: [ "macos-12", "macos-latest" ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '17'
           distribution: 'graalvm'
+      - run: echo "arch=$(arch)" >> $GITHUB_OUTPUT
+        id: meta
       - run: ./gradlew build
-      - run: ./gradlew nativeCompile
+      - run: |
+          ./gradlew nativeCompile
+          cp ./build/native/nativeCompile/xcresults ./xcresults
+          cp ./build/native/nativeCompile/xcresults ./xcresults-${{ steps.meta.outputs.arch }}
       - uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./build/native/nativeCompile/xcresults
-          asset_name: xcresults
           asset_content_type: application/octet-stream
+          asset_path: xcresults-${{ steps.meta.outputs.arch }}
+          asset_name: xcresults-${{ steps.meta.outputs.arch }}
+      - uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_content_type: application/octet-stream
+          asset_path: xcresults
+          asset_name: xcresults
+        if: ${{ steps.meta.outputs.arch == 'arm64' }}
