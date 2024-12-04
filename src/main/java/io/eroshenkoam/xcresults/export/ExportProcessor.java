@@ -94,8 +94,8 @@ public class ExportProcessor {
          */
         final int THREAD_COUNT = Runtime.getRuntime().availableProcessors() / 3;
 
+        System.out.printf("Finding test refs in summary...%n");
         long start = System.nanoTime();
-
         final ConcurrentHashMap<String, ExportMeta> testRefIds = new ConcurrentHashMap<>();
         for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
@@ -111,6 +111,7 @@ public class ExportProcessor {
         }
         writeTimeMeasure(start);
 
+        System.out.printf("Collect information about %s test refs...%n", testRefIds.size());
         start = System.nanoTime();
         final ConcurrentHashMap<JsonNode, ExportMeta> testSummaries = new ConcurrentHashMap<>();
         testRefIds.forEach(THREAD_COUNT, (testRefId, meta) -> {
@@ -150,7 +151,7 @@ public class ExportProcessor {
         start = System.nanoTime();
         final ConcurrentHashMap<String, String> attachmentsRefs = new ConcurrentHashMap<>();
         final ConcurrentHashMap<Path, TestResult> testResults = new ConcurrentHashMap<>();
-        testSummaries.forEach((testSummary, meta) -> {
+        testSummaries.forEach(THREAD_COUNT, (testSummary, meta) -> {
             final TestResult testResult = new Allure2ExportFormatter().format(meta, testSummary);
             final Path testSummaryPath = getResultFilePath(outputPath);
             try {
@@ -183,6 +184,7 @@ public class ExportProcessor {
         });
         writeTimeMeasure(start);
 
+        System.out.printf("Postprocess results...%n");
         start = System.nanoTime();
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
         if (Objects.nonNull(addCarouselAttachment)) {
