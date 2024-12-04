@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.eroshenkoam.xcresults.util.FormatUtil.getResultFilePath;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
@@ -84,7 +85,12 @@ public class ExportProcessor {
     public void export() throws Exception {
         final JsonNode node = readSummary();
 
-        final Map<String, ExportMeta> testRefIds = new HashMap<>();
+        /*
+        second half of cores for xcrun itself
+         */
+        final int THREAD_COUNT = Runtime.getRuntime().availableProcessors() / 2;
+
+        final ConcurrentHashMap<String, ExportMeta> testRefIds = new ConcurrentHashMap<>();
         for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
                 final ExportMeta meta = new ExportMeta();
@@ -99,7 +105,7 @@ public class ExportProcessor {
         }
 
         final Map<JsonNode, ExportMeta> testSummaries = new HashMap<>();
-        testRefIds.forEach((testRefId, meta) -> {
+        testRefIds.forEach(THREAD_COUNT, (testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
 
             JsonNode summaries = null;
@@ -133,7 +139,7 @@ public class ExportProcessor {
         });
 
         System.out.printf("Export information about %s test summaries...%n", testSummaries.size());
-        final Map<String, String> attachmentsRefs = new HashMap<>();
+        final ConcurrentHashMap<String, String> attachmentsRefs = new ConcurrentHashMap<>();
         final Map<Path, TestResult> testResults = new HashMap<>();
         for (final Map.Entry<JsonNode, ExportMeta> entry : testSummaries.entrySet()) {
             final JsonNode testSummary = entry.getKey();
@@ -157,12 +163,13 @@ public class ExportProcessor {
             });
             testResults.put(testSummaryPath, testResult);
         }
+        
         System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
-        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
-            final String attachmentRef = attachment.getValue();
-            final Path attachmentPath = outputPath.resolve(attachment.getKey());
-            exportReference(attachmentRef, attachmentPath);
-        }
+        attachmentsRefs.forEach(THREAD_COUNT, (key, value) -> {
+            final Path attachmentPath = outputPath.resolve(key);
+            exportReference(value, attachmentPath);
+        });
+
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
         if (Objects.nonNull(addCarouselAttachment)) {
             postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
