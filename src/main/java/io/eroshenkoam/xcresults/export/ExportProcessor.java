@@ -101,7 +101,22 @@ public class ExportProcessor {
         final Map<JsonNode, ExportMeta> testSummaries = new HashMap<>();
         testRefIds.forEach((testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
-            for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
+
+            JsonNode summaries = null;
+
+            try {
+                summaries = testRef.get(SUMMARIES).get(VALUES);
+            } catch (final Exception e) {
+                System.out.printf("Problem with id: %s %n", testRefId);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+
+            if (summaries == null) {
+                return;
+            }
+
+            for (JsonNode summary : summaries) {
                 for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
                     final ExportMeta testMeta = getTestMeta(meta, testableSummary);
                     if (testableSummary.has(TESTS) && testableSummary.get(TESTS).has(VALUES)) {
