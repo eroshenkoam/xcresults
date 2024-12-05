@@ -7,7 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.agent }}
+    strategy:
+      matrix:
+        agent: [ "macos-12", "macos-latest" ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
@@ -15,4 +18,10 @@ jobs:
           java-version: '17'
           distribution: 'graalvm'
       - run: ./gradlew build
-      - run: ./gradlew nativeCompile
+      - run: |
+          ./gradlew nativeCompile
+          cp ./build/native/nativeCompile/xcresults ./xcresults-${{ steps.meta.outputs.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xcresults-${{ steps.meta.outputs.arch }}
+          path: ./xcresults-${{ steps.meta.outputs.arch }}
