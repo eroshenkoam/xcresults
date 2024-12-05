@@ -10,13 +10,15 @@ jobs:
     runs-on: ${{ matrix.agent }}
     strategy:
       matrix:
-        agent: [ "macos-12", "macos-latest" ]
+        agent: [ "macos-13", "macos-15-arm64" ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '17'
           distribution: 'graalvm'
+      - run: echo "arch=$(arch)" >> $GITHUB_OUTPUT
+        id: meta
       - run: ./gradlew build
       - run: |
           ./gradlew nativeCompile
