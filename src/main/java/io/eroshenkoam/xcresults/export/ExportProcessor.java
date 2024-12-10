@@ -101,7 +101,14 @@ public class ExportProcessor {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
                 final ExportMeta meta = new ExportMeta();
                 if (action.has(RUN_DESTINATION)) {
-                    meta.label(RUN_DESTINATION, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
+                    String target_name = "unknown device";
+                    try {
+                        target_name = action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText();
+                    }  catch (final Exception e) {
+                        System.out.printf("RUN_DESTINATION dont have display name: %s %n", action);
+                        System.out.println(e.getMessage());
+                    }
+                    meta.label(RUN_DESTINATION, target_name);
                 }
                 if (action.has(START_TIME)) {
                     meta.setStart(parseDate(action.get(START_TIME).get(VALUE).textValue()));
@@ -122,7 +129,7 @@ public class ExportProcessor {
             try {
                 summaries = testRef.get(SUMMARIES).get(VALUES);
             } catch (final Exception e) {
-                System.out.printf("Problem with id: %s %n", testRefId);
+                System.out.printf("Problem with id: %s %n", testRef);
                 System.out.println(e.getMessage());
             }
 
