@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.eroshenkoam.xcresults.util.FormatUtil.getResultFilePath;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
@@ -81,15 +82,33 @@ public class ExportProcessor {
         this.carouselTemplatePath = carouselTemplatePath;
     }
 
+    private static void writeTimeMeasure(long start) {
+        System.out.printf("Operation took: %s ms %n", (System.nanoTime() - start)/1000000);
+    }
+
     public void export() throws Exception {
         final JsonNode node = readSummary();
 
-        final Map<String, ExportMeta> testRefIds = new HashMap<>();
+        /*
+        other cores for xcrun itself
+         */
+        final int THREAD_COUNT = Runtime.getRuntime().availableProcessors() / 3;
+
+        System.out.printf("Finding test refs in summary...%n");
+        long start = System.nanoTime();
+        final ConcurrentHashMap<String, ExportMeta> testRefIds = new ConcurrentHashMap<>();
         for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
                 final ExportMeta meta = new ExportMeta();
                 if (action.has(RUN_DESTINATION)) {
-                    meta.label(RUN_DESTINATION, action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText());
+                    String target_name = "unknown device";
+                    try {
+                        target_name = action.get(RUN_DESTINATION).get(DISPLAY_NAME).get(VALUE).asText();
+                    }  catch (final Exception e) {
+                        System.out.printf("RUN_DESTINATION dont have display name: %s %n", action);
+                        System.out.println(e.getMessage());
+                    }
+                    meta.label(RUN_DESTINATION, target_name);
                 }
                 if (action.has(START_TIME)) {
                     meta.setStart(parseDate(action.get(START_TIME).get(VALUE).textValue()));
@@ -97,11 +116,28 @@ public class ExportProcessor {
                 testRefIds.put(action.get(ACTION_RESULT).get(TEST_REF).get(ID).get(VALUE).asText(), meta);
             }
         }
+        writeTimeMeasure(start);
 
-        final Map<JsonNode, ExportMeta> testSummaries = new HashMap<>();
-        testRefIds.forEach((testRefId, meta) -> {
+        System.out.printf("Collect information about %s test refs...%n", testRefIds.size());
+        start = System.nanoTime();
+        final ConcurrentHashMap<JsonNode, ExportMeta> testSummaries = new ConcurrentHashMap<>();
+        testRefIds.forEach(THREAD_COUNT, (testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
-            for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
+
+            JsonNode summaries = null;
+
+            try {
+                summaries = testRef.get(SUMMARIES).get(VALUES);
+            } catch (final Exception e) {
+                System.out.printf("Problem with id: %s %n", testRef);
+                System.out.println(e.getMessage());
+            }
+
+            if (summaries == null) {
+                return;
+            }
+
+            for (JsonNode summary : summaries) {
                 for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
                     final ExportMeta testMeta = getTestMeta(meta, testableSummary);
                     if (testableSummary.has(TESTS) && testableSummary.get(TESTS).has(VALUES)) {
@@ -116,17 +152,20 @@ public class ExportProcessor {
                 }
             }
         });
+        writeTimeMeasure(start);
 
         System.out.printf("Export information about %s test summaries...%n", testSummaries.size());
-        final Map<String, String> attachmentsRefs = new HashMap<>();
-        final Map<Path, TestResult> testResults = new HashMap<>();
-        for (final Map.Entry<JsonNode, ExportMeta> entry : testSummaries.entrySet()) {
-            final JsonNode testSummary = entry.getKey();
-            final ExportMeta meta = entry.getValue();
-
+        start = System.nanoTime();
+        final ConcurrentHashMap<String, String> attachmentsRefs = new ConcurrentHashMap<>();
+        final ConcurrentHashMap<Path, TestResult> testResults = new ConcurrentHashMap<>();
+        testSummaries.forEach(THREAD_COUNT, (testSummary, meta) -> {
             final TestResult testResult = new Allure2ExportFormatter().format(meta, testSummary);
             final Path testSummaryPath = getResultFilePath(outputPath);
-            mapper.writeValue(testSummaryPath.toFile(), testResult);
+            try {
+                mapper.writeValue(testSummaryPath.toFile(), testResult);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             final Map<String, List<String>> attachmentSources = getAttachmentSources(testResult);
             final List<JsonNode> summaries = new ArrayList<>();
@@ -141,18 +180,25 @@ public class ExportProcessor {
                 });
             });
             testResults.put(testSummaryPath, testResult);
-        }
+        });
+        writeTimeMeasure(start);
+
         System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
-        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
-            final String attachmentRef = attachment.getValue();
-            final Path attachmentPath = outputPath.resolve(attachment.getKey());
-            exportReference(attachmentRef, attachmentPath);
-        }
+        start = System.nanoTime();
+        attachmentsRefs.forEach(THREAD_COUNT, (key, value) -> {
+            final Path attachmentPath = outputPath.resolve(key);
+            exportReference(value, attachmentPath);
+        });
+        writeTimeMeasure(start);
+
+        System.out.printf("Postprocess results...%n");
+        start = System.nanoTime();
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
         if (Objects.nonNull(addCarouselAttachment)) {
             postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
         }
         postProcessors.forEach(postProcessor -> postProcessor.processTestResults(outputPath, testResults));
+        writeTimeMeasure(start);
     }
 
     private ExportMeta getTestMeta(final ExportMeta meta, final JsonNode testableSummary) {

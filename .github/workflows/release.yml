@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.agent }}
     strategy:
       matrix:
-        agent: [ "macos-12", "macos-latest" ]
+        agent: [ "macos-13", "macos-latest" ]
     steps:
       - uses: actions/checkout@v3
       - uses: graalvm/setup-graalvm@v1
