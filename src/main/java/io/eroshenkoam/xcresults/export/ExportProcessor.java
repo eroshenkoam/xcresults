@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import freemarker.template.Version;
+import io.eroshenkoam.xcresults.broken.BrokenPostProcessor;
 import io.eroshenkoam.xcresults.carousel.CarouselPostProcessor;
 import io.qameta.allure.model.ExecutableItem;
 import io.qameta.allure.model.TestResult;
@@ -67,16 +68,20 @@ public class ExportProcessor {
     private final Path inputPath;
     private final Path outputPath;
 
+    private String brokenConfigPath;
+
     private Boolean addCarouselAttachment;
     private String carouselTemplatePath;
 
 
     public ExportProcessor(final Path inputPath,
                            final Path outputPath,
+                           final String brokenConfigPath,
                            final Boolean addCarouselAttachment,
                            final String carouselTemplatePath) {
         this.inputPath = inputPath;
         this.outputPath = outputPath;
+        this.brokenConfigPath = brokenConfigPath;
         this.addCarouselAttachment = addCarouselAttachment;
         this.carouselTemplatePath = carouselTemplatePath;
     }
@@ -142,17 +147,23 @@ public class ExportProcessor {
             });
             testResults.put(testSummaryPath, testResult);
         }
-        System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
-        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
-            final String attachmentRef = attachment.getValue();
-            final Path attachmentPath = outputPath.resolve(attachment.getKey());
-            exportReference(attachmentRef, attachmentPath);
-        }
+//        System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
+//        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
+//            final String attachmentRef = attachment.getValue();
+//            final Path attachmentPath = outputPath.resolve(attachment.getKey());
+//            exportReference(attachmentRef, attachmentPath);
+//        }
+//
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
         if (Objects.nonNull(addCarouselAttachment)) {
             postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
         }
-        postProcessors.forEach(postProcessor -> postProcessor.processTestResults(outputPath, testResults));
+        if (Objects.nonNull(brokenConfigPath)) {
+            postProcessors.add(new BrokenPostProcessor(brokenConfigPath));
+        }
+        postProcessors.forEach(
+                postProcessor -> postProcessor.processTestResults(outputPath, testResults)
+        );
     }
 
     private ExportMeta getTestMeta(final ExportMeta meta, final JsonNode testableSummary) {

@@ -39,6 +39,12 @@ public class ExportCommand implements Runnable {
     protected List<Path> inputPath;
 
     @CommandLine.Option(
+            names = {"--broken-config-path"},
+            description = "Broken config path"
+    )
+    protected String brokenConfigPath;
+
+    @CommandLine.Option(
             names = {"-o", "--output"},
             description = "Export output directory"
     )
@@ -69,7 +75,7 @@ public class ExportCommand implements Runnable {
     private void runUnsafe(final Path input, final Path output) throws Exception  {
         System.out.printf("Export xcresults from [%s] to [%s]\n", input, output);
         final ExportProcessor processor = new ExportProcessor(
-                input, output, addCarouselAttachment, carouselTemplatePath
+                input, output, brokenConfigPath, addCarouselAttachment, carouselTemplatePath
         );
         processor.export();
     }

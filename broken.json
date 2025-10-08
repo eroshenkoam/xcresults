@@ -1,0 +1,7 @@
+{
+  "matchers": [
+    {
+      "messageRegexp": "Test exceeded execution time allowance of.*"
+    }
+  ]
+}
