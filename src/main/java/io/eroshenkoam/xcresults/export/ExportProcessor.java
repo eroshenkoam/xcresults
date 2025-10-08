@@ -147,13 +147,13 @@ public class ExportProcessor {
             });
             testResults.put(testSummaryPath, testResult);
         }
-//        System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
-//        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
-//            final String attachmentRef = attachment.getValue();
-//            final Path attachmentPath = outputPath.resolve(attachment.getKey());
-//            exportReference(attachmentRef, attachmentPath);
-//        }
-//
+        System.out.printf("Export information about %s attachments...%n", attachmentsRefs.size());
+        for (Map.Entry<String, String> attachment : attachmentsRefs.entrySet()) {
+            final String attachmentRef = attachment.getValue();
+            final Path attachmentPath = outputPath.resolve(attachment.getKey());
+            exportReference(attachmentRef, attachmentPath);
+        }
+
         final List<ExportPostProcessor> postProcessors = new ArrayList<>();
         if (Objects.nonNull(addCarouselAttachment)) {
             postProcessors.add(new CarouselPostProcessor(carouselTemplatePath));
