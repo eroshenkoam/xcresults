@@ -29,6 +29,8 @@ import static java.util.Objects.isNull;
 public class Allure2ExportFormatter implements ExportFormatter {
 
     private static final String IDENTIFIER = "identifier";
+    private static final String IDENTIFIER_URL = "identifierURL";
+
     private static final String DURATION = "duration";
     private static final String STATUS = "testStatus";
     private static final String FAILURE_SUMMARIES = "failureSummaries";
@@ -74,11 +76,10 @@ public class Allure2ExportFormatter implements ExportFormatter {
         if (node.has(NAME)) {
             result.setName(node.get(NAME).get(VALUE).asText());
         }
-        if (node.has(IDENTIFIER)) {
-            final String identifier = node.get(IDENTIFIER).get(VALUE).asText();
-            result.setHistoryId(getHistoryId(meta, identifier));
-            result.setFullName(identifier);
-        }
+        getFullName(node).ifPresent(fullName -> {
+            result.setFullName(fullName);
+            result.setHistoryId(fullName);
+        });
         if (node.has(STATUS)) {
             result.setStatus(getTestStatus(node));
         }
@@ -410,6 +411,17 @@ public class Allure2ExportFormatter implements ExportFormatter {
                     .setFailures(this.getFailures());
 
         }
+    }
+
+    private Optional<String> getFullName(final JsonNode node) {
+        if (node.has(IDENTIFIER_URL)) {
+            final String identifier = node.get(IDENTIFIER_URL).get(VALUE).asText();
+            return Optional.of(identifier
+                    .replaceFirst("test://com.apple.xcode//", "")
+                    .replace("/", ".")
+            );
+        }
+        return Optional.empty();
     }
 
     private String getHistoryId(final ExportMeta meta, final String identifier) {
