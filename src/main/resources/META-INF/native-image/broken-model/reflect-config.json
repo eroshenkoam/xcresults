@@ -1,0 +1,14 @@
+[
+  {
+    "name" : "io.eroshenkoam.xcresults.broken.BrokenConfig",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "io.eroshenkoam.xcresults.broken.BrokenStatusMatcher",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true
+  }
+]
