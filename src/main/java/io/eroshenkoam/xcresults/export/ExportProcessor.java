@@ -62,6 +62,8 @@ public class ExportProcessor {
 
     private static final String TEST_REF = "testsRef";
 
+    private static Boolean shouldUseLegacyMode = null;
+
     private final ObjectMapper mapper = new ObjectMapper()
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
@@ -236,11 +238,15 @@ public class ExportProcessor {
     }
 
     private static boolean isLegacyMode() {
+        if (shouldUseLegacyMode != null) {
+            return shouldUseLegacyMode;
+        }
         try {
             final String output = readProcessOutputAsString(new ProcessBuilder("xcodebuild", "-version"));
             final String versionLine = output.split("\n")[0];
             final Version version = new Version(versionLine.replaceFirst("Xcode ", "").trim());
-            return version.getMajor() >= 16;
+            shouldUseLegacyMode = version.getMajor() >= 16;
+            return shouldUseLegacyMode;
         } catch (final Exception e) {
             return false;
         }
