@@ -50,6 +50,13 @@ public class ExportCommand implements Runnable {
     )
     protected Path outputPath;
 
+    @CommandLine.Option(
+            names = {"-t", "--threads"},
+            description = "Thread count for export processor",
+            defaultValue = "1"
+    )
+    protected String threadCount;
+
     @Override
     public void run() {
         try {
@@ -75,7 +82,7 @@ public class ExportCommand implements Runnable {
     private void runUnsafe(final Path input, final Path output) throws Exception  {
         System.out.printf("Export xcresults from [%s] to [%s]\n", input, output);
         final ExportProcessor processor = new ExportProcessor(
-                input, output, brokenConfigPath, addCarouselAttachment, carouselTemplatePath
+                input, output, brokenConfigPath, addCarouselAttachment, carouselTemplatePath, threadCount
         );
         processor.export();
     }
