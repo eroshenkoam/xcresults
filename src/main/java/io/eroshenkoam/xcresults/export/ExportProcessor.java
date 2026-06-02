@@ -51,6 +51,7 @@ public class ExportProcessor {
     private static final String SUMMARY_REF = "summaryRef";
 
     private static final String SUITE = "suite";
+    private static final String SUMMARY = "summary";
 
     private static final String ID = "id";
     private static final String TYPE = "_type";
@@ -59,6 +60,9 @@ public class ExportProcessor {
     private static final String VALUES = "_values";
     private static final String DISPLAY_NAME = "displayName";
     private static final String TARGET_NAME = "targetName";
+    private static final String GROUP_NAME = "name";
+    private static final String DOCUMENTATION = "documentation";
+    private static final String CONTENT = "content";
 
     private static final String TEST_REF = "testsRef";
 
@@ -111,8 +115,9 @@ public class ExportProcessor {
                     final ExportMeta testMeta = getTestMeta(meta, testableSummary);
                     if (testableSummary.has(TESTS) && testableSummary.get(TESTS).has(VALUES)) {
                         for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
+                            final ExportMeta groupMeta = getGroupMeta(testMeta, test);
                             getTestSummaries(test).forEach(testSummary -> {
-                                testSummaries.put(testSummary, testMeta);
+                                testSummaries.put(testSummary, groupMeta);
                             });
                         }
                     } else {
@@ -172,6 +177,25 @@ public class ExportProcessor {
         meta.getLabels().forEach(exportMeta::label);
         exportMeta.label(SUITE, testableSummary.get(TARGET_NAME).get(VALUE).asText());
         return exportMeta;
+    }
+
+    private ExportMeta getGroupMeta(final ExportMeta baseMeta, final JsonNode group) {
+        final ExportMeta meta = new ExportMeta();
+        meta.setStart(baseMeta.getStart());
+        baseMeta.getLabels().forEach(meta::label);
+        if (group.has(SUMMARY)) {
+            meta.label(SUITE, group.get(SUMMARY).get(VALUE).asText());
+        } else if (group.has(SUBTESTS) && group.has(GROUP_NAME)) {
+            meta.label(SUITE, group.get(GROUP_NAME).get(VALUE).asText());
+        }
+        if (group.has(DOCUMENTATION)) {
+            for (JsonNode doc : group.get(DOCUMENTATION).get(VALUES)) {
+                if (doc.has(CONTENT)) {
+                    meta.getSuiteDocs().add(doc.get(CONTENT).get(VALUE).asText());
+                }
+            }
+        }
+        return meta;
     }
 
     private Map<String, List<String>> getAttachmentSources(final ExecutableItem executableItem) {
