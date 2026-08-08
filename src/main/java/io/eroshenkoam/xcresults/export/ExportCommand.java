@@ -1,5 +1,6 @@
 package io.eroshenkoam.xcresults.export;
 
+import io.eroshenkoam.xcresults.MainCommand;
 import org.apache.commons.io.FileUtils;
 import picocli.CommandLine;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 
 @CommandLine.Command(
         name = "export", mixinStandardHelpOptions = true,
+        versionProvider = MainCommand.VersionProvider.class,
         description = "Export XC test results to json with attachments"
 )
 public class ExportCommand implements Runnable {
@@ -64,7 +66,7 @@ public class ExportCommand implements Runnable {
                 FileUtils.deleteDirectory(output.toFile());
             }
             Files.createDirectories(output);
-            for (Path path: input) {
+            for (Path path : input) {
                 runUnsafe(path, output);
             }
         } catch (Exception e) {
@@ -72,7 +74,7 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private void runUnsafe(final Path input, final Path output) throws Exception  {
+    private void runUnsafe(final Path input, final Path output) throws Exception {
         System.out.printf("Export xcresults from [%s] to [%s]\n", input, output);
         final ExportProcessor processor = new ExportProcessor(
                 input, output, brokenConfigPath, addCarouselAttachment, carouselTemplatePath

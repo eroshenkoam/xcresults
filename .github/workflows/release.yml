@@ -18,9 +18,9 @@ jobs:
           distribution: 'graalvm'
       - run: echo "arch=$(arch)" >> $GITHUB_OUTPUT
         id: meta
-      - run: ./gradlew build
+      - run: ./gradlew build -Pversion=${{ github.event.release.tag_name }}
       - run: |
-          ./gradlew nativeCompile
+          ./gradlew nativeCompile -Pversion=${{ github.event.release.tag_name }}
           cp ./build/native/nativeCompile/xcresults ./xcresults
           cp ./build/native/nativeCompile/xcresults ./xcresults-${{ steps.meta.outputs.arch }}
       - uses: actions/upload-release-asset@v1.0.1
