@@ -3,6 +3,9 @@
     "includes": [
       {
         "pattern": "templates/.*\\.ftl"
+      },
+      {
+        "pattern": "version\\.txt"
       }
     ]
   }

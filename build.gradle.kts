@@ -4,7 +4,6 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
 
 description = "Allure Server Java Client"
 
@@ -20,6 +19,13 @@ java {
 
 tasks.withType(JavaCompile::class) {
     options.encoding = "UTF-8"
+}
+
+tasks.processResources {
+    inputs.property("version", project.version.toString())
+    filesMatching("version.txt") {
+        expand("version" to project.version)
+    }
 }
 
 graalvmNative {
