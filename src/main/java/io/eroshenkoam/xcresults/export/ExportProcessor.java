@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import static io.eroshenkoam.xcresults.util.FormatUtil.getResultFilePath;
 import static io.eroshenkoam.xcresults.util.FormatUtil.parseDate;
+import static io.eroshenkoam.xcresults.util.JsonUtil.values;
 import static io.eroshenkoam.xcresults.util.ProcessUtil.*;
 
 public class ExportProcessor {
@@ -90,7 +91,7 @@ public class ExportProcessor {
         final JsonNode node = readSummary();
 
         final Map<String, ExportMeta> testRefIds = new HashMap<>();
-        for (JsonNode action : node.get(ACTIONS).get(VALUES)) {
+        for (JsonNode action : values(node, ACTIONS)) {
             if (action.get(ACTION_RESULT).has(TEST_REF)) {
                 final ExportMeta meta = new ExportMeta();
                 if (action.has(RUN_DESTINATION)) {
@@ -106,11 +107,11 @@ public class ExportProcessor {
         final Map<JsonNode, ExportMeta> testSummaries = new HashMap<>();
         testRefIds.forEach((testRefId, meta) -> {
             final JsonNode testRef = getReference(testRefId);
-            for (JsonNode summary : testRef.get(SUMMARIES).get(VALUES)) {
-                for (JsonNode testableSummary : summary.get(TESTABLE_SUMMARIES).get(VALUES)) {
+            for (JsonNode summary : values(testRef, SUMMARIES)) {
+                for (JsonNode testableSummary : values(summary, TESTABLE_SUMMARIES)) {
                     final ExportMeta testMeta = getTestMeta(meta, testableSummary);
                     if (testableSummary.has(TESTS) && testableSummary.get(TESTS).has(VALUES)) {
-                        for (JsonNode test : testableSummary.get(TESTS).get(VALUES)) {
+                        for (JsonNode test : values(testableSummary, TESTS)) {
                             getTestSummaries(test).forEach(testSummary -> {
                                 testSummaries.put(testSummary, testMeta);
                             });
@@ -191,19 +192,15 @@ public class ExportProcessor {
 
     private Map<String, String> getAttachmentRefs(final JsonNode test) {
         final Map<String, String> refs = new HashMap<>();
-        if (test.has(ATTACHMENTS)) {
-            for (final JsonNode attachment : test.get(ATTACHMENTS).get(VALUES)) {
-                if (attachment.has(PAYLOAD_REF)) {
-                    final String fileName = attachment.get(FILENAME).get(VALUE).asText();
-                    final String attachmentRef = attachment.get(PAYLOAD_REF).get(ID).get(VALUE).asText();
-                    refs.put(fileName, attachmentRef);
-                }
+        for (final JsonNode attachment : values(test, ATTACHMENTS)) {
+            if (attachment.has(PAYLOAD_REF)) {
+                final String fileName = attachment.get(FILENAME).get(VALUE).asText();
+                final String attachmentRef = attachment.get(PAYLOAD_REF).get(ID).get(VALUE).asText();
+                refs.put(fileName, attachmentRef);
             }
         }
-        if (test.has(SUBACTIVITIES)) {
-            for (final JsonNode subActivity : test.get(SUBACTIVITIES).get(VALUES)) {
-                refs.putAll(getAttachmentRefs(subActivity));
-            }
+        for (final JsonNode subActivity : values(test, SUBACTIVITIES)) {
+            refs.putAll(getAttachmentRefs(subActivity));
         }
         return refs;
     }
@@ -219,10 +216,8 @@ public class ExportProcessor {
             }
         }
 
-        if (test.has(SUBTESTS)) {
-            for (final JsonNode subTest : test.get(SUBTESTS).get(VALUES)) {
-                summaries.addAll(getTestSummaries(subTest));
-            }
+        for (final JsonNode subTest : values(test, SUBTESTS)) {
+            summaries.addAll(getTestSummaries(subTest));
         }
         return summaries;
     }
