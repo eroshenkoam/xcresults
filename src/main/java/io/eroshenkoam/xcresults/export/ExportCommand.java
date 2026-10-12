@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Iterator;
 
 import static io.eroshenkoam.xcresults.util.FormatUtil.getResultFilePath;
 import static io.eroshenkoam.xcresults.util.FormatUtil.getValues;
@@ -107,6 +108,15 @@ public class ExportCommand implements Runnable {
 
     private void runUnsafe() throws Exception {
         final JsonNode node = readSummary();
+        if (node == null) {
+            System.out.println("ERROR: xcresulttool returned no output");
+            return;
+        }
+        if (!node.has(ACTIONS)) {
+            System.out.printf("ERROR: no '%s' field in summary. Available keys: %s%n",
+                    ACTIONS, iteratorToList(node.fieldNames()));
+            return;
+        }
         if (Files.exists(outputPath)) {
             System.out.println("Delete existing output directory...");
             FileUtils.deleteDirectory(outputPath.toFile());
@@ -259,6 +269,7 @@ public class ExportCommand implements Runnable {
                 "xcrun",
                 "xcresulttool",
                 "get",
+                "--legacy",
                 "--format", "json",
                 "--path", inputPath.toAbsolutePath().toString()
         );
@@ -271,6 +282,7 @@ public class ExportCommand implements Runnable {
                 "xcrun",
                 "xcresulttool",
                 "get",
+                "--legacy",
                 "--format", "json",
                 "--path", inputPath.toAbsolutePath().toString(),
                 "--id", id
@@ -284,12 +296,13 @@ public class ExportCommand implements Runnable {
                 "xcrun",
                 "xcresulttool",
                 "export",
+                "--legacy",
                 "--type", "file",
                 "--path", inputPath.toAbsolutePath().toString(),
                 "--id", id,
                 "--output-path", output.toAbsolutePath().toString()
         );
-        readProcessOutput(exportBuilder);
+        runProcess(exportBuilder);
         if (FILE_EXTENSION_HEIC.equals(FilenameUtils.getExtension(output.toString()))) {
             convertHeicToJpeg(output);
         }
@@ -315,18 +328,38 @@ public class ExportCommand implements Runnable {
         }
     }
 
-    private JsonNode readProcessOutput(final ProcessBuilder builder) {
+    private void runProcess(final ProcessBuilder builder) {
         try {
             final Process process = builder.start();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private JsonNode readProcessOutput(final ProcessBuilder builder) {
+        try {
+            builder.redirectErrorStream(false);
+            final Process process = builder.start();
+            final JsonNode result;
             try (InputStream input = process.getInputStream()) {
-                if (Objects.nonNull(input)) {
-                    return mapper.readTree(input);
-                } else {
-                    return null;
+                result = mapper.readTree(input);
+            }
+            try (InputStream err = process.getErrorStream()) {
+                final String stderr = new String(err.readAllBytes()).trim();
+                if (!stderr.isEmpty()) {
+                    System.out.printf("xcresulttool stderr: %s%n", stderr);
                 }
             }
+            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static <T> List<T> iteratorToList(final Iterator<T> iterator) {
+        final List<T> list = new ArrayList<>();
+        iterator.forEachRemaining(list::add);
+        return list;
     }
 }
