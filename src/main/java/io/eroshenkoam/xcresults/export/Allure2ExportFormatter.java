@@ -87,13 +87,13 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setCurrent(result)
                 .setPath(Collections.singletonList(result));
         context.setFailures(new HashMap<>());
-        if (node.has(FAILURE_SUMMARIES)) {
+        if (node.has(FAILURE_SUMMARIES) && node.get(FAILURE_SUMMARIES).has(VALUES)) {
             node.get(FAILURE_SUMMARIES).get(VALUES).forEach(failure -> {
                 final String key = failure.get(ACTIVITY_UUID).get(VALUE).asText();
                 context.getFailures().put(key, failure);
             });
         }
-        if (node.has(ACTIVITY_SUMMARIES)) {
+        if (node.has(ACTIVITY_SUMMARIES) && node.get(ACTIVITY_SUMMARIES).has(VALUES)) {
             final Iterable<JsonNode> activities = node.get(ACTIVITY_SUMMARIES).get(VALUES);
             for (JsonNode activity : activities) {
                 parseStep(activity, context);
@@ -222,12 +222,12 @@ public class Allure2ExportFormatter implements ExportFormatter {
             step.setStart(parseDate(activity.get(ACTIVITY_START).get(VALUE).asText()));
             step.setStop(parseDate(activity.get(ACTIVITY_FINISH).get(VALUE).asText()));
         }
-        if (activity.has(SUBACTIVITIES)) {
+        if (activity.has(SUBACTIVITIES) && activity.get(SUBACTIVITIES).has(VALUES)) {
             for (JsonNode subActivity : activity.get(SUBACTIVITIES).get(VALUES)) {
                 parseStep(subActivity, context.child(step));
             }
         }
-        if (activity.has(ACTIVITY_FAILURE_SUMMARY_IDS)) {
+        if (activity.has(ACTIVITY_FAILURE_SUMMARY_IDS) && activity.get(ACTIVITY_FAILURE_SUMMARY_IDS).has(VALUES)) {
             final Iterable<JsonNode> activityFailures = activity.get(ACTIVITY_FAILURE_SUMMARY_IDS).get(VALUES);
             for (JsonNode activityFailureUuid : activityFailures) {
                 final String uuid = activityFailureUuid.get(VALUE).asText();
@@ -325,7 +325,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
                 .setStart(timestamp)
                 .setStop(timestamp);
         failureStep.setStatusDetails(failedDetails);
-        if (activityFailure.has(ATTACHMENTS)) {
+        if (activityFailure.has(ATTACHMENTS) && activityFailure.get(ATTACHMENTS).has(VALUES)) {
             failureStep.getAttachments().addAll(getAttachments(activityFailure.get(ATTACHMENTS).get(VALUES)));
         }
         return failureStep;
@@ -334,7 +334,7 @@ public class Allure2ExportFormatter implements ExportFormatter {
     private String getStackTrace(final JsonNode activityFailure) {
         if (activityFailure.has(SOURCE_CODE_CONTEXT)) {
             final JsonNode context = activityFailure.get(SOURCE_CODE_CONTEXT);
-            if (context.has(CALL_STACK)) {
+            if (context.has(CALL_STACK) && context.findValue(CALL_STACK).has(VALUES)) {
                 final List<String> lines = new ArrayList<>();
                 for (JsonNode line : context.findValue(CALL_STACK).get(VALUES)) {
                     Optional.ofNullable(line.get(SYMBOL_INFO))

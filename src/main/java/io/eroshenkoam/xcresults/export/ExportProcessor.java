@@ -191,7 +191,7 @@ public class ExportProcessor {
 
     private Map<String, String> getAttachmentRefs(final JsonNode test) {
         final Map<String, String> refs = new HashMap<>();
-        if (test.has(ATTACHMENTS)) {
+        if (test.has(ATTACHMENTS) && test.get(ATTACHMENTS).has(VALUES)) {
             for (final JsonNode attachment : test.get(ATTACHMENTS).get(VALUES)) {
                 if (attachment.has(PAYLOAD_REF)) {
                     final String fileName = attachment.get(FILENAME).get(VALUE).asText();
@@ -200,7 +200,7 @@ public class ExportProcessor {
                 }
             }
         }
-        if (test.has(SUBACTIVITIES)) {
+        if (test.has(SUBACTIVITIES) && test.get(SUBACTIVITIES).has(VALUES)) {
             for (final JsonNode subActivity : test.get(SUBACTIVITIES).get(VALUES)) {
                 refs.putAll(getAttachmentRefs(subActivity));
             }
@@ -219,7 +219,7 @@ public class ExportProcessor {
             }
         }
 
-        if (test.has(SUBTESTS)) {
+        if (test.has(SUBTESTS) && test.get(SUBTESTS).has(VALUES)) {
             for (final JsonNode subTest : test.get(SUBTESTS).get(VALUES)) {
                 summaries.addAll(getTestSummaries(subTest));
             }
